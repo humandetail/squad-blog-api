@@ -2,5 +2,12 @@
   "extends": "eslint-config-egg/typescript",
   "parserOptions": {
     "project": "./tsconfig.json"
+  },
+  "rules": {
+    "valid-jsdoc": 0,
+    "jsdoc/check-tag-names": 0,
+    "jsdoc/require-returns-description": 0,
+    "jsdoc/require-returns-type": 0,
+    "comma-dangle": 0
   }
 }
