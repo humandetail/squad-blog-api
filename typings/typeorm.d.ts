@@ -3,15 +3,18 @@
 
 import 'egg';
 import { TreeRepository, Repository } from 'typeorm'
-import EntitiesSysUser from '../app/entities/sys/User'
+import MysqlSysUser from '../app/entities/mysql/sys/User'
+import MongodbTestStatistics from '../app/entities/mongodb/test/Statistics'
 
 declare module 'egg' {
   interface Context {
     entity: {
-      sys: { User: typeof EntitiesSysUser }
+      sys: { User: typeof MysqlSysUser }
+      mongodb: { test: { Statistics: typeof MongodbTestStatistics } }
     }
     repo: {
-      sys: { User: Repository<EntitiesSysUser> }
+      sys: { User: Repository<MysqlSysUser> }
+      mongodb: { test: { Statistics: Repository<MongodbTestStatistics> } }
     }
   }
 }

@@ -27,6 +27,7 @@
     "egg-redis": "^2.4.0",
     "egg-scripts": "^2.6.0",
     "egg-swagger-doc": "^2.3.2",
+    "mongodb": "^4.2.0",
     "mysql": "^2.18.1",
     "typeorm": "^0.2.40"
   },

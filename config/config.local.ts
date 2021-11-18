@@ -5,15 +5,25 @@ export default () => {
 
   // typeorm 配置
   config.typeorm = {
-    client: {
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'root',
-      database: 'squad-blog',
-      synchronize: true,
-    },
+    clients: [
+      {
+        name: 'default',
+        type: 'mysql',
+        host: 'localhost',
+        port: 3306,
+        username: 'root',
+        password: 'root',
+        database: 'squad-blog',
+        synchronize: true,
+      },
+      {
+        name: 'mongodb',
+        type: 'mongodb',
+        host: 'localhost',
+        port: 27017,
+        database: 'squad-blog'
+      }
+    ],
   };
 
   // redis 配置

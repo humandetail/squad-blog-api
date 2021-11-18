@@ -1,6 +1,10 @@
 [
   {
     "name": "default",
-    "entitiesDir": "app/entities"
+    "entitiesDir": "app/entities/mysql"
+  },
+  {
+    "name": "mongodb",
+    "entitiesDir": "app/entities/mongodb"
   }
 ]
