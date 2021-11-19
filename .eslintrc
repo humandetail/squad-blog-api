@@ -8,6 +8,7 @@
     "jsdoc/check-tag-names": 0,
     "jsdoc/require-returns-description": 0,
     "jsdoc/require-returns-type": 0,
-    "comma-dangle": 0
+    "comma-dangle": 0,
+    "space-before-function-paren": 0
   }
 }
