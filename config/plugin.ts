@@ -18,6 +18,14 @@ const plugin: EggPlugin = {
     enable: true,
     package: 'egg-swagger-doc',
   },
+  classValidator: {
+    enable: true,
+    package: '@hackycy/egg-class-validator',
+  },
+  globalHeader: {
+    enable: true,
+    package: 'egg-global-header'
+  }
 };
 
 export default plugin;

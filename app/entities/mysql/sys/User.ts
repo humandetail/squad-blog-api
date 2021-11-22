@@ -26,6 +26,12 @@ export default class User extends BaseEntity {
   password: string;
 
   @Column({
+    length: 64,
+    comment: '盐'
+  })
+  salt: string;
+
+  @Column({
     name: 'is_lock',
     type: 'tinyint',
     comment: '是否锁定当前用户，1=是，0=否',

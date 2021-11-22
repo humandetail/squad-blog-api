@@ -69,5 +69,9 @@ export default () => {
     enable: true,
   };
 
+  config.jwt = {
+    secret: 'H5IOzF0AbaUhYosuT6rKeBqwRdDPiELQ'
+  };
+
   return config;
 };
