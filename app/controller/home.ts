@@ -1,20 +1,20 @@
-import { Controller } from 'egg';
 import { getConnection } from 'typeorm';
 import Keyword from '../entities/mongodb/article/Keywords';
 import PostView from '../entities/mongodb/article/PostView';
 import Log from '../entities/mongodb/sys/Log';
 import Statistic from '../entities/mongodb/sys/Statistic';
 import { AdminRoute, Route } from '../libs/decorators/RouterRegister';
+import BaseController from './BaseController';
 
 /**
  * @Controller 首页
  */
-export default class HomeController extends Controller {
+export default class HomeController extends BaseController {
   /**
    * @Summary 首页
    * @Description 首页desc
    * @Router get /
-   * @Response 200 BaseReseponse
+   * @Response 200 baseReseponse
    */
   @Route('get', '/')
   public async index() {

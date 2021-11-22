@@ -40,7 +40,7 @@ export function registerRouter ({ router }: Application) {
       constructorFn,
       middlewares
     }) => {
-      router[method](url, ...middlewares, async (ctx: Context) => {
+      router[method](`/api${url.startsWith('/') ? '' : '/'}${url}`, ...middlewares, async (ctx: Context) => {
         const Ctor = new constructorFn(ctx);
         await Ctor[handlerName].call(Ctor);
       });

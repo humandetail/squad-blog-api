@@ -1,5 +1,5 @@
 // 响应体
-export const BaseReseponse = {
+export const baseReseponse = {
   code: { type: 'number' },
   data: { type: 'object' },
   message: { type: 'string' }

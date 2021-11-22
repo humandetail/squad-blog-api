@@ -42,7 +42,14 @@ export default (appInfo: EggAppInfo) => {
   };
 
   // add your egg config in here
-  config.middleware = [];
+  config.middleware = [
+    // 加载错误处理中间件
+    'errorHandler'
+  ];
+
+  config.errorHandler = {
+    match: '/api'
+  };
 
   // add your special config in here
   const bizConfig = {

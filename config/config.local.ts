@@ -47,6 +47,7 @@ export default () => {
     schemes: [ 'http', 'https' ],
     consumes: [ 'application/json' ],
     produces: [ 'application/json' ],
+    basePath: '/api',
     securityDefinitions: {
       // apikey: {
       //   type: 'apiKey',

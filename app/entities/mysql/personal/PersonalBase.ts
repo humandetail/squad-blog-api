@@ -3,7 +3,7 @@ import { BaseEntity } from '../../BaseEntity';
 import Picture from '../resource/Picture';
 import User from '../sys/User';
 
-@Entity({ name: 'personalBase' })
+@Entity({ name: 'personal_base' })
 export default class PersonalBase extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
