@@ -1,7 +1,6 @@
 import { Application } from 'egg';
+import { registerRouter } from './libs/decorators/RouterRegister';
 
 export default (app: Application) => {
-  const { controller, router } = app;
-
-  router.get('/', controller.home.index);
+  registerRouter(app);
 };

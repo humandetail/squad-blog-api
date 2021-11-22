@@ -18,9 +18,9 @@ const plugin: EggPlugin = {
     enable: true,
     package: 'egg-swagger-doc',
   },
-  classValidator: {
+  validate: {
     enable: true,
-    package: '@hackycy/egg-class-validator',
+    package: 'egg-validate',
   },
   globalHeader: {
     enable: true,

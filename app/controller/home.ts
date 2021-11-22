@@ -4,6 +4,7 @@ import Keyword from '../entities/mongodb/article/Keywords';
 import PostView from '../entities/mongodb/article/PostView';
 import Log from '../entities/mongodb/sys/Log';
 import Statistic from '../entities/mongodb/sys/Statistic';
+import { AdminRoute, Route } from '../libs/decorators/RouterRegister';
 
 /**
  * @Controller 首页
@@ -15,6 +16,7 @@ export default class HomeController extends Controller {
    * @Router get /
    * @Response 200 BaseReseponse
    */
+  @Route('get', '/')
   public async index() {
     const { ctx } = this;
 
@@ -160,5 +162,11 @@ export default class HomeController extends Controller {
     // };
 
     ctx.body = 'Success';
+  }
+
+  @AdminRoute('get', '/test')
+  public async test () {
+    this.ctx.validate({ id: { type: 'string' } }, this.ctx.request.query);
+    this.ctx.body = 'test';
   }
 }
