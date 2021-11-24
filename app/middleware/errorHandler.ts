@@ -17,11 +17,11 @@ export default function errorHandler (): any {
       ctx.set('Content-Type', 'application/json');
       ctx.status = status;
       ctx.body = JSON.stringify({
-        code: err.errorCode || 500,
+        code: err.errorCode || err.status || 500,
         data: status === 422 && ctx.app.config.env !== 'prod'
           ? { errors: err.errors }
           : null,
-        message,
+        message
       });
     }
   };

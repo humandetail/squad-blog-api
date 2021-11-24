@@ -36,40 +36,6 @@ export default () => {
     },
   };
 
-  // swagger 配置
-  config.swaggerdoc = {
-    dirScanner: './app/controller',
-    apiInfo: {
-      title: '接口文档',
-      description: 'squad-blog 接口文档',
-      version: '1.0.0',
-    },
-    schemes: [ 'http', 'https' ],
-    consumes: [ 'application/json' ],
-    produces: [ 'application/json' ],
-    basePath: '/api',
-    securityDefinitions: {
-      // apikey: {
-      //   type: 'apiKey',
-      //   name: 'clientkey',
-      //   in: 'header',
-      // },
-      // oauth2: {
-      //   type: 'oauth2',
-      //   tokenUrl: 'http://petstore.swagger.io/oauth/dialog',
-      //   flow: 'password',
-      //   scopes: {
-      //     'write:access_token': 'write access_token',
-      //     'read:access_token': 'read access_token',
-      //   },
-      // },
-    },
-    enableSecurity: false,
-    // enableValidate: true,
-    routerMap: false,
-    enable: true,
-  };
-
   config.jwt = {
     secret: 'H5IOzF0AbaUhYosuT6rKeBqwRdDPiELQ'
   };

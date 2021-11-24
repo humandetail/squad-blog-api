@@ -19,16 +19,17 @@
     "ci": "npm run lint && npm run cov && npm run tsc",
     "autod": "autod",
     "lint": "eslint . --ext .ts",
-    "clean": "ets clean"
+    "clean": "ets clean",
+    "apidoc": "apidoc -i app/controller -o docs/api"
   },
   "dependencies": {
+    "@hackycy/egg-class-validator": "^0.1.1",
     "@hackycy/egg-typeorm": "^0.5.1",
     "crypto-js": "^4.1.1",
     "egg": "^2.6.1",
     "egg-global-header": "^1.0.1",
     "egg-redis": "^2.4.0",
     "egg-scripts": "^2.6.0",
-    "egg-swagger-doc": "^2.3.2",
     "egg-validate": "^2.0.2",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.1",
@@ -44,6 +45,7 @@
     "@types/mocha": "^2.2.40",
     "@types/node": "^7.0.12",
     "@types/supertest": "^2.0.0",
+    "apidoc": "^0.50.2",
     "autod": "^3.0.1",
     "autod-egg": "^1.1.0",
     "egg-bin": "^4.11.0",

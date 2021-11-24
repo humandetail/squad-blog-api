@@ -6,20 +6,6 @@ export interface IResponseOptions {
   message?: string;
 }
 
-/**
- * @requestDef pageQuery
- * @request query number current 当前页码
- * @request query number pageSize 单页数量
- * @request query string sortField 排序字段
- * @request query boolean sortDesc 是否逆序排序
- */
-
-/**
- * @requestDef baseQuery
- * @request query string operator 操作员
- * @request query number isShow 是否显示：1=是；0=否
- */
-
 export default abstract class BaseController extends Controller {
   /**
    * 获取查询参数

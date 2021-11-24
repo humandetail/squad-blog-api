@@ -16,8 +16,7 @@ import 'egg-jsonp';
 import 'egg-view';
 import '@hackycy/egg-typeorm';
 import 'egg-redis';
-import 'egg-swagger-doc';
-import 'egg-validate';
+import '@hackycy/egg-class-validator';
 import 'egg-global-header';
 import { EggPluginItem } from 'egg';
 declare module 'egg' {
@@ -36,8 +35,7 @@ declare module 'egg' {
     view?: EggPluginItem;
     typeorm?: EggPluginItem;
     redis?: EggPluginItem;
-    swaggerdoc?: EggPluginItem;
-    validate?: EggPluginItem;
+    classValidator?: EggPluginItem;
     globalHeader?: EggPluginItem;
   }
 }

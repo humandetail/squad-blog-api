@@ -14,13 +14,9 @@ const plugin: EggPlugin = {
     enable: true,
     package: 'egg-redis',
   },
-  swaggerdoc: {
+  classValidator: {
     enable: true,
-    package: 'egg-swagger-doc',
-  },
-  validate: {
-    enable: true,
-    package: 'egg-validate',
+    package: '@hackycy/egg-class-validator',
   },
   globalHeader: {
     enable: true,
