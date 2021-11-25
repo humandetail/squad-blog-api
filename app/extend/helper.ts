@@ -15,6 +15,10 @@ import * as jwt from 'jsonwebtoken';
  * openssl rsa -in rsa_private.pem -out rsa_public.pem -pubout
  */
 const _privateKey = fs.readFileSync(path.resolve(__dirname, '../../config/cert/rsa_private.pem'));
+// 使用 publicKey 生成 abc@123
+// VL5Mw/szCqxDzyvHNbT6NnJAhskqWOuKY65ECZQbAv++6EZMjqzHeINgepSHlkSzaHJ/3yP6LN4BZWF9kk8lU3z/gaIjaC1ntddA3Vz9/fuuO0/NO3LDQDsgB8FuCkPvdxYnY5hLopf7G6rmjER0VUi7NqvsijNh4Nr/0/dD7EI=
+// 123@abc
+// mkNW4gS9VXIWYXTXSQg/2ovA7sLsbecKj0d3/VA3RNr9C/oyR2j2KXby8+0Zvbek764PrPCdYR3lLkOK6Z8J5/zxsNWbvCS5On4mRUl0enqO4io5akbWy/NIynZQfcC0kFf4rqymRblEZo9Iy1cQcY5cLyH8+oKfHiyi7YO5+1w=
 
 export default {
   /**
@@ -35,6 +39,10 @@ export default {
     }
 
     return str;
+  },
+
+  formatDate (date: any, format = 'YYYY-MM-DD HH:mm:ss') {
+    return moment(date).format(format);
   },
 
   /**
@@ -103,13 +111,13 @@ export default {
 
   /**
    * 密码加密
+   * @param this -
    * @param content - 前端传递过来的密文
    * @param salt - 对应的密码盐
    * @return { string }
    */
-  passwordEncrypt (content: string, salt: string): string {
-    const plain = this.rsaDecrypt(content);
-    return this.sha1(`${this.md5(plain)}${salt}`);
+  passwordEncrypt (this: IHelper, content: string, salt: string): string {
+    return this.sha1(`${this.md5(content)}${salt}`);
   },
 
   /**

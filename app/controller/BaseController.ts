@@ -1,4 +1,6 @@
 import { Controller } from 'egg';
+import { Equal } from 'typeorm';
+import { PageGetDto } from '../dto/common/common';
 
 export interface IResponseOptions {
   data?: any;
@@ -36,6 +38,32 @@ export default abstract class BaseController extends Controller {
   }
 
   /**
+   * 格式化 sql 查询条件
+   */
+  protected formatFindManyOptions (query: PageGetDto) {
+    const { current = 1, pageSize = 10, sortField, sortDesc, ...where } = query;
+
+    const limit = !current || !pageSize
+      ? undefined
+      : { skip: (current - 1) * pageSize, take: pageSize };
+
+    const order = !sortField || !sortDesc
+      ? undefined
+      : { order: { [sortField]: (sortDesc ? 'DESC' : 'AST') as any } };
+
+    return {
+      ...Object.entries(where).reduce((prev, [key, value]) => {
+        if (value) {
+          prev[key] = Equal(value);
+        }
+        return prev;
+      }, {}),
+      ...order,
+      ...limit,
+    };
+  }
+
+  /**
    * 分页数据组装
    * @param records - 分页数据
    * @param current - 当前页码
@@ -43,7 +71,7 @@ export default abstract class BaseController extends Controller {
    * @param total - 总条目数
    * @returns
    */
-  protected pageWrapper<T> (records: T[] = [], current = 0, pageSize = 0, total = 0) {
+  protected pageWrapper<T> (records: T[] = [], current = 1, pageSize = 10, total = 0) {
     return {
       current,
       pageSize,
@@ -55,7 +83,7 @@ export default abstract class BaseController extends Controller {
   /**
    * 返回响应体
    */
-  protected res (options: IResponseOptions): void {
+  protected res (options: IResponseOptions = {}): void {
     const { ctx } = this;
     ctx.set('Content-Type', 'application/json');
     ctx.body = {
