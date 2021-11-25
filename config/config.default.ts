@@ -44,10 +44,16 @@ export default (appInfo: EggAppInfo) => {
   // add your egg config in here
   config.middleware = [
     // 加载错误处理中间件
-    'errorHandler'
+    'errorHandler',
+    // 加载鉴权中间件
+    'adminAuthority'
   ];
 
   config.errorHandler = {
+    match: '/api'
+  };
+
+  config.adminAuthority = {
     match: '/api'
   };
 

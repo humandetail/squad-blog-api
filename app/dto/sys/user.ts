@@ -8,10 +8,7 @@ import {
 } from 'class-validator';
 import { Expose, Transform } from 'class-transformer';
 import { BaseUpdateDto, PageGetDto } from '../common/common';
-
-const usernameReg = /^[a-z0-9A-Z]{4,20}$/;
-const passwordReg = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*_])[A-Za-z\d!@#$%^&*_]{6,20}$/;
-
+import { usernameReg, passwordReg } from '../../libs/regexp';
 export class CreateUserDto {
   @Matches(usernameReg, { message: '用户名只能由字母或数字组成，长度为4-20' })
   @Expose()

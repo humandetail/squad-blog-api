@@ -5,6 +5,7 @@ import 'egg';
 import ExportBaseController from '../../../app/controller/BaseController';
 import ExportApiDocTest from '../../../app/controller/apiDocTest';
 import ExportHome from '../../../app/controller/home';
+import ExportBackendCommonAuth from '../../../app/controller/backend/common/Auth';
 import ExportBackendUserUser from '../../../app/controller/backend/user/User';
 
 declare module 'egg' {
@@ -13,6 +14,9 @@ declare module 'egg' {
     apiDocTest: ExportApiDocTest;
     home: ExportHome;
     backend: {
+      common: {
+        auth: ExportBackendCommonAuth;
+      }
       user: {
         user: ExportBackendUserUser;
       }

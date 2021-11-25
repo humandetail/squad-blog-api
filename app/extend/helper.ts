@@ -140,7 +140,9 @@ export default {
    * 获取 ip
    */
   getIp (this: IHelper): string {
-    const { request: req } = this;
+    const req = this.ctx.req as any;
+
+    console.log(req);
 
     return (
       req?.headers['x-forwarded-for'] || // 判断是否有反向代理 IP
