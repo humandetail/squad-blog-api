@@ -8,7 +8,7 @@ export default class Blogroll extends BaseEntity {
 
   @Column({
     length: 32,
-    comment: '链接名称',
+    comment: '友情链接名称',
     unique: true
   })
   name: string;

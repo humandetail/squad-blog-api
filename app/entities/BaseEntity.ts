@@ -3,6 +3,7 @@ import { Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 export abstract class BaseEntity {
   @Column({
     length: 32,
+    default: '',
     comment: '操作员'
   })
   operator: string;

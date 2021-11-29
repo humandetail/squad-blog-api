@@ -20,6 +20,6 @@ export default class PictureCategory extends BaseEntity {
   })
   displayName: string;
 
-  @OneToMany(() => Picture, picture => picture.cate)
+  @OneToMany(() => Picture, picture => picture.category)
   pictures: Picture[];
 }

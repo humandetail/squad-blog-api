@@ -1,6 +1,6 @@
 import { PrimaryGeneratedColumn, Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../BaseEntity';
-import Post from '../article/Post';
+import Post from '../post/Post';
 import Picture from './Picture';
 
 @Entity({ name: 'post_template' })

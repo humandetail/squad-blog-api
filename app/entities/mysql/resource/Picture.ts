@@ -1,6 +1,6 @@
 import { PrimaryGeneratedColumn, Column, Entity, OneToMany, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../../BaseEntity';
-import Post from '../article/Post';
+import Post from '../post/Post';
 import PostTemplate from './PostTemplate';
 import PictureCategory from './PictureCategory';
 import PersonalSkill from '../personal/PersonalSkill';
@@ -13,7 +13,7 @@ export default class Picture extends BaseEntity {
   id: number;
 
   @ManyToOne(() => PictureCategory, cate => cate.pictures)
-  cate: PictureCategory;
+  category: PictureCategory;
 
   @Column({
     length: 64,

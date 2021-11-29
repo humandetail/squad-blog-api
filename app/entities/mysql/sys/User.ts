@@ -27,7 +27,7 @@ export default class User extends BaseEntity {
 
   @Column({
     length: 64,
-    comment: '盐'
+    comment: '随机密码盐'
   })
   salt: string;
 

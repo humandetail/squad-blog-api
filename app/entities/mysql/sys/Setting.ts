@@ -43,7 +43,7 @@ export default class Setting extends BaseEntity {
 
   @Column({
     type: 'tinyint',
-    comment: '网站运行状态'
+    comment: '网站运行状态, 0=正常状态，1=升级维护，2=网站已关闭'
   })
   status: number;
 }

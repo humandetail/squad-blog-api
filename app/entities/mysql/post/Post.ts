@@ -19,7 +19,7 @@ export default class Post extends BaseEntity {
   id: string;
 
   @ManyToOne(() => Category, cate => cate.posts)
-  cate: Category;
+  category: Category;
 
   @ManyToMany(() => Tag)
   @JoinTable()
@@ -65,6 +65,14 @@ export default class Post extends BaseEntity {
     comment: '文章来源地址'
   })
   source: string;
+
+  @Column({
+    name: 'recommendation_index',
+    default: 0,
+    unsigned: true,
+    comment: '推荐指数'
+  })
+  recommendationIndex: number;
 
   @Column({
     name: 'seo_title',

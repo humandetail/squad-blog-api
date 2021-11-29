@@ -3,12 +3,12 @@
 
 import 'egg';
 import { TreeRepository, Repository } from 'typeorm'
-import MysqlArticleCategory from '../app/entities/mysql/article/Category'
-import MysqlArticlePost from '../app/entities/mysql/article/Post'
-import MysqlArticleTag from '../app/entities/mysql/article/Tag'
 import MysqlPersonalPersonalBase from '../app/entities/mysql/personal/PersonalBase'
 import MysqlPersonalPersonalSkill from '../app/entities/mysql/personal/PersonalSkill'
 import MysqlPersonalPersonalWork from '../app/entities/mysql/personal/PersonalWork'
+import MysqlPostCategory from '../app/entities/mysql/post/Category'
+import MysqlPostPost from '../app/entities/mysql/post/Post'
+import MysqlPostTag from '../app/entities/mysql/post/Tag'
 import MysqlResourceBlogroll from '../app/entities/mysql/resource/Blogroll'
 import MysqlResourcePicture from '../app/entities/mysql/resource/Picture'
 import MysqlResourcePictureCategory from '../app/entities/mysql/resource/PictureCategory'
@@ -24,15 +24,15 @@ import MongodbSysStatistic from '../app/entities/mongodb/sys/Statistic'
 declare module 'egg' {
   interface Context {
     entity: {
-      article: {
-        Category: typeof MysqlArticleCategory
-        Post: typeof MysqlArticlePost
-        Tag: typeof MysqlArticleTag
-      }
       personal: {
         PersonalBase: typeof MysqlPersonalPersonalBase
         PersonalSkill: typeof MysqlPersonalPersonalSkill
         PersonalWork: typeof MysqlPersonalPersonalWork
+      }
+      post: {
+        Category: typeof MysqlPostCategory
+        Post: typeof MysqlPostPost
+        Tag: typeof MysqlPostTag
       }
       resource: {
         Blogroll: typeof MysqlResourceBlogroll
@@ -54,15 +54,15 @@ declare module 'egg' {
       }
     }
     repo: {
-      article: {
-        Category: Repository<MysqlArticleCategory>
-        Post: Repository<MysqlArticlePost>
-        Tag: Repository<MysqlArticleTag>
-      }
       personal: {
         PersonalBase: Repository<MysqlPersonalPersonalBase>
         PersonalSkill: Repository<MysqlPersonalPersonalSkill>
         PersonalWork: Repository<MysqlPersonalPersonalWork>
+      }
+      post: {
+        Category: Repository<MysqlPostCategory>
+        Post: Repository<MysqlPostPost>
+        Tag: Repository<MysqlPostTag>
       }
       resource: {
         Blogroll: Repository<MysqlResourceBlogroll>

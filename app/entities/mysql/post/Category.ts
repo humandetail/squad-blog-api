@@ -22,6 +22,6 @@ export default class Category extends BaseEntity {
   })
   displayName: string;
 
-  @OneToMany(() => Post, post => post.cate)
+  @OneToMany(() => Post, post => post.category)
   posts: Post[];
 }
