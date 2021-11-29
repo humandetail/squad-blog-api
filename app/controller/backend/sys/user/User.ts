@@ -1,8 +1,8 @@
 import { isEmpty } from 'lodash';
 import { Like } from 'typeorm';
-import { ChangePasswordDto, CreateUserDto, QueryUsersDto, UpdateUserDto } from '../../../dto/sys/user';
-import { AdminRoute } from '../../../libs/decorators/RouterRegister';
-import BaseController from '../../BaseController';
+import { ChangePasswordDto, CreateUserDto, QueryUsersDto, UpdateUserDto } from '../../../../dto/sys/user';
+import { AdminRoute } from '../../../../libs/decorators/RouterRegister';
+import BaseController from '../../../BaseController';
 
 export default class UserController extends BaseController {
   @AdminRoute('post', '/user')

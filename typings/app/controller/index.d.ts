@@ -7,7 +7,7 @@ import ExportApiDocTest from '../../../app/controller/apiDocTest';
 import ExportHome from '../../../app/controller/home';
 import ExportBackendCommonAuth from '../../../app/controller/backend/common/Auth';
 import ExportBackendPersonalBase from '../../../app/controller/backend/personal/base';
-import ExportBackendUserUser from '../../../app/controller/backend/user/User';
+import ExportBackendSysUserUser from '../../../app/controller/backend/sys/user/User';
 
 declare module 'egg' {
   interface IController {
@@ -21,8 +21,10 @@ declare module 'egg' {
       personal: {
         base: ExportBackendPersonalBase;
       }
-      user: {
-        user: ExportBackendUserUser;
+      sys: {
+        user: {
+          user: ExportBackendSysUserUser;
+        }
       }
     }
   }
