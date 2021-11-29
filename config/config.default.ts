@@ -39,6 +39,7 @@ export default (appInfo: EggAppInfo) => {
    */
   config.multipart = {
     mode: 'file',
+    fields: 100 // Reach fields limit
   };
 
   // add your egg config in here

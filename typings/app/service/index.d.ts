@@ -8,6 +8,8 @@ type CanExportFunc = AnyFunc<Promise<any>> | AnyFunc<IterableIterator<any>>;
 type AutoInstanceType<T, U = T extends CanExportFunc ? T : T extends AnyFunc ? ReturnType<T> : T> = U extends AnyClass ? InstanceType<U> : U;
 import ExportBaseService from '../../../app/service/BaseService';
 import ExportCommonAuth from '../../../app/service/common/auth';
+import ExportPersonalBase from '../../../app/service/personal/Base';
+import ExportResourcePicture from '../../../app/service/resource/Picture';
 import ExportSysUser from '../../../app/service/sys/User';
 
 declare module 'egg' {
@@ -15,6 +17,12 @@ declare module 'egg' {
     baseService: AutoInstanceType<typeof ExportBaseService>;
     common: {
       auth: AutoInstanceType<typeof ExportCommonAuth>;
+    }
+    personal: {
+      base: AutoInstanceType<typeof ExportPersonalBase>;
+    }
+    resource: {
+      picture: AutoInstanceType<typeof ExportResourcePicture>;
     }
     sys: {
       user: AutoInstanceType<typeof ExportSysUser>;

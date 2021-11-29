@@ -40,7 +40,7 @@ export default abstract class BaseController extends Controller {
   /**
    * 格式化 sql 查询条件
    */
-  protected formatFindManyOptions (query: PageGetDto) {
+  protected formatFindManyOptions (query: PageGetDto, whereOpts: any = null) {
     const { current = 1, pageSize = 10, sortField, sortDesc, ...where } = query;
 
     const limit = !current || !pageSize
@@ -52,12 +52,15 @@ export default abstract class BaseController extends Controller {
       : { order: { [sortField]: (sortDesc ? 'DESC' : 'AST') as any } };
 
     return {
-      ...Object.entries(where).reduce((prev, [key, value]) => {
-        if (value) {
-          prev[key] = Equal(value);
-        }
-        return prev;
-      }, {}),
+      where: {
+        ...Object.entries(where).reduce((prev, [key, value]) => {
+          if (value) {
+            prev[key] = Equal(value);
+          }
+          return prev;
+        }, {}),
+        ...whereOpts
+      },
       ...order,
       ...limit,
     };

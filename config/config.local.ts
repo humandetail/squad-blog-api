@@ -15,6 +15,8 @@ export default () => {
         password: 'root',
         database: 'squad-blog',
         synchronize: true,
+        logger: 'file',
+        logging: true
       },
       {
         name: 'mongodb',

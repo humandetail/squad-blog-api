@@ -20,7 +20,7 @@ export default class PersonalBase extends BaseEntity {
   personalSkills: PersonalSkill[];
 
   @OneToMany(() => PersonalWork, PersonalWork => PersonalWork.base)
-  PersonalWorks: PersonalWork[];
+  personalWorks: PersonalWork[];
 
   @Column({
     length: 32,

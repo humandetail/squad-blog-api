@@ -109,14 +109,13 @@ export default class UserController extends BaseController {
     const { ctx } = this;
     const dto = await ctx.validate<QueryUsersDto>(QueryUsersDto, this.getQuery());
     const { username, ...otherDtoProps } = dto;
-    const options = this.formatFindManyOptions(otherDtoProps);
+    const options = this.formatFindManyOptions(
+      otherDtoProps,
+      username ? { username: Like('username%') } : null
+    );
 
-    const { users, total } = await this.service.sys.user.getUsers({
-      ...(username ? { username: Like('%username') } : null),
-      ...options
-    });
+    const { users, total } = await this.service.sys.user.getUsers(options);
 
-    console.log(users);
     this.res({
       data: this.pageWrapper(users, dto.current, dto.pageSize, total)
     });
