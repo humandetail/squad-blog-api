@@ -8,7 +8,7 @@
 
 ```bash
 $ npm i
-$ npm run dev
+$ npm run dev -- qiniuAK=xxx qiniuSK=xxx
 $ open http://localhost:7001/
 ```
 

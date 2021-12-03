@@ -1,4 +1,5 @@
 import { Context } from 'egg';
+import * as _ from 'lodash';
 
 // 错误处理中间件
 export default function errorHandler (): any {
@@ -11,18 +12,32 @@ export default function errorHandler (): any {
       const status = err.status || 500;
 
       const message = status === 500 && ctx.app.config.env === 'prod'
-        ? 'Internal Server Error'
+        ? 'Internal Server Error!'
         : err.message;
 
       ctx.set('Content-Type', 'application/json');
       ctx.status = status;
       ctx.body = JSON.stringify({
         code: err.errorCode || err.status || 500,
-        data: status === 422 && ctx.app.config.env !== 'prod'
-          ? { errors: err.errors }
-          : null,
-        message
+        data: null,
+        message: status === 422 && ctx.app.config.env !== 'prod'
+          ? formatErrors(err.errors)
+          : message
       });
     }
   };
+}
+
+function formatErrors (errors: any) {
+  if (typeof errors === 'string') {
+    return errors;
+  }
+
+  if (_.isArray(errors)) {
+    return errors.reduce((prev, item) => {
+      return prev + Object.values(item.constraints).join(';') + ';';
+    }, '');
+  }
+
+  return errors;
 }

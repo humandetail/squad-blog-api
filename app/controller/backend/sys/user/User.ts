@@ -2,10 +2,19 @@ import { isEmpty } from 'lodash';
 import { Like } from 'typeorm';
 import { ChangePasswordDto, CreateUserDto, QueryUsersDto, UpdateUserDto } from '../../../../dto/sys/user';
 import { AdminRoute } from '../../../../libs/decorators/RouterRegister';
+import { formatUserInfo } from '../../../../libs/utils';
 import BaseController from '../../../BaseController';
 
 export default class UserController extends BaseController {
-  @AdminRoute('post', '/user')
+  /**
+   * @api {post} /users 创建用户
+   * @apiGroup System - User
+   * @apiParam {String} username 用户名
+   * @apiParam {String} password 密码
+   * @apiUse Auth
+   * @apiUse BaseRes
+   */
+  @AdminRoute('post', '/users')
   async create () {
     const { ctx } = this;
 
@@ -42,8 +51,16 @@ export default class UserController extends BaseController {
     }
   }
 
-  @AdminRoute('put', '/user/changePassword/:id')
-  async changePassword () {
+  /**
+   * @api {put} /users/:id/password 修改用户密码
+   * @apiGroup System - User
+   * @apiParam {String} password 原密码
+   * @apiParam {String} newPassword 新密码
+   * @apiUse Auth
+   * @apiUse BaseRes
+   */
+  @AdminRoute('put', '/users/:id/password')
+  async edit () {
     const { ctx } = this;
 
     const { id } = this.getParams();
@@ -66,7 +83,15 @@ export default class UserController extends BaseController {
     }
   }
 
-  @AdminRoute('put', '/user/:id')
+  /**
+   * @api {put} /users/:id/password 更新用户信息
+   * @apiGroup System - User
+   * @apiParam {String} isLock 是否锁定用户
+   * @apiUse BaseReq
+   * @apiUse Auth
+   * @apiUse BaseRes
+   */
+  @AdminRoute('put', '/users/:id')
   async update () {
     const { ctx } = this;
 
@@ -94,35 +119,70 @@ export default class UserController extends BaseController {
     }
   }
 
-  @AdminRoute('get', '/user/:id')
-  async getUser () {
+  /**
+   * @api {get} /users/:id 获取用户详情
+   * @apiGroup System - User
+   * @apiUse Auth
+   * @apiUse InfoRes
+   * @apiSuccess {Object} data
+   * @apiSuccess {String} data.username 用户名
+   * @apiSuccess {number} data.isLock 是否锁定
+   * @apiSuccess {String} data.lastLogin 最后登录时间
+   */
+  @AdminRoute('get', '/users/:id')
+  async show () {
     const { id } = this.getParams();
-    const userInfo = await this.service.sys.user.getUserInfo(id);
+    const userInfo = await this.service.sys.user.findOne({ id });
+
+    if (!userInfo) {
+      this.res({
+        code: 30001
+      });
+      return;
+    }
 
     this.res({
-      data: userInfo
+      data: formatUserInfo(userInfo)
     });
   }
 
+  /**
+   * @api {get} /users 获取用户列表
+   * @apiGroup System - User
+   * @apiSuccess {Object} data
+   * @apiSuccess {Object[]} data.records
+   * @apiSuccess {String} data.records.username 用户名
+   * @apiSuccess {number} data.records.isLock 是否锁定
+   * @apiSuccess {String} data.records.lastLogin 最后登录时间
+   * @apiUse PageReq
+   * @apiUse Auth
+   * @apiUse PageRes
+   */
   @AdminRoute('get', '/users')
-  async getUsers () {
+  async index () {
     const { ctx } = this;
     const dto = await ctx.validate<QueryUsersDto>(QueryUsersDto, this.getQuery());
     const { username, ...otherDtoProps } = dto;
     const options = this.formatFindManyOptions(
       otherDtoProps,
-      username ? { username: Like('username%') } : null
+      username ? { username: Like(`%${username}%`) } : null
     );
 
-    const { users, total } = await this.service.sys.user.getUsers(options);
+    const [ users, total ] = await this.service.sys.user.getUsers(options);
 
     this.res({
-      data: this.pageWrapper(users, dto.current, dto.pageSize, total)
+      data: this.pageWrapper(users.map(v => formatUserInfo(v)), dto.current, dto.pageSize, total)
     });
   }
 
-  @AdminRoute('delete', '/user/:id')
-  async delete () {
+  /**
+   * @api {delete} /users/:id 删除用户
+   * @apiGroup System - User
+   * @apiUse Auth
+   * @apiUse BaseRes
+   */
+  @AdminRoute('delete', '/users/:id')
+  async destroy () {
     const { id } = this.getParams();
     const result = await this.service.sys.user.delete(id);
     if (!result) {

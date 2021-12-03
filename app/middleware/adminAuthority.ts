@@ -37,8 +37,8 @@ export default function adminAuthority (): any {
       }
     }
 
-    if (code > 200) {
-      ctx.status = 200;
+    if (code !== 200) {
+      ctx.status = code;
       ctx.body = {
         code,
         data: null,

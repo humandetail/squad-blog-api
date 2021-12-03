@@ -1,14 +1,15 @@
 import { Application } from 'egg';
+import * as _ from 'lodash';
 
 // 初始化用户
 export async function initUser (app: Application) {
   const ctx = app.createAnonymousContext();
 
-  const users = await ctx.service.sys.user.getUsers({});
+  const [users, total] = await ctx.service.sys.user.getUsers({});
   const { getNanoid, passwordEncrypt, genRandomString, now } = ctx.helper;
   const salt = genRandomString();
 
-  if (!users || users.total <= 0) {
+  if (_.isEmpty(users) || total <= 0) {
     // 创建一个 admin 用户
     const result = await ctx.service.sys.user.create({
       id: getNanoid(),

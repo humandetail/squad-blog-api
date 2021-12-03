@@ -20,3 +20,4 @@ test/**/*.map
 config/**/*.map
 
 ormlogs.log
+qiniu.config

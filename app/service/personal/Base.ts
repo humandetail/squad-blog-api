@@ -1,6 +1,7 @@
 import { FindManyOptions } from 'typeorm';
 import { CreatePersonalBaseDto, UpdatePersonalBaseDto } from '../../dto/personal/base';
-import BaseService from '../BaseService';
+import PersonalBase from '../../entities/mysql/personal/PersonalBase';
+import BaseService, { IWhereCondition } from '../BaseService';
 
 type IUpdateInfo = Partial<UpdatePersonalBaseDto>;
 
@@ -19,9 +20,10 @@ export default class PersonalBaseService extends BaseService {
     isShowSkills,
     isShowWorks
   }: CreatePersonalBaseDto) {
-    const user = await this.getRepo().sys.User.findOne(this.ctx.token.id);
+    const user = await this.getRepo().sys.User.findOne(this.ctx?.token?.id);
+
     if (!user) {
-      this.ctx.throw('请先登录', 403);
+      this.ctx.throw('用户不存在', 422);
     }
 
     // 获取头像信息
@@ -119,31 +121,20 @@ export default class PersonalBaseService extends BaseService {
     return true;
   }
 
-  async getPersonalBase (id: number) {
-    const personalBase = await this.getRepo().personal.PersonalBase.findOne(id, {
-      relations: ['user', 'avatar']
+  async findOne (where: IWhereCondition<PersonalBase>, relations: string[] = ['user', 'avatar']) {
+    const personalBase = await this.getRepo().personal.PersonalBase.findOne({
+      where,
+      relations
     });
 
-    if (!personalBase) {
-      return null;
-    }
-
-    const { user, avatar, ...data } = this.formateDateField(personalBase);
-
-    return {
-      ...data,
-      userId: user?.id || null,
-      avatarId: avatar?.id || null
-    };
+    return personalBase;
   }
 
   async getPersonalBases (options: FindManyOptions) {
-    const [personalBases, total] = await this.getRepo().personal.PersonalBase.findAndCount(options);
-
-    return {
-      personalBases: personalBases.map(v => this.formateDateField(v)),
-      total
-    };
+    return await this.getRepo().personal.PersonalBase.findAndCount({
+      ...options,
+      relations: ['avatar', 'user']
+    } as any);
   }
 
   async delete (id: number) {

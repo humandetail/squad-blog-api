@@ -42,12 +42,21 @@ export default (appInfo: EggAppInfo) => {
     fields: 100 // Reach fields limit
   };
 
+  /**
+   * @see https://github.com/eggjs/egg-global-header
+   */
+  config.globalHeader = {
+    'Powered-by': 'squad-blog',
+  };
+
   // add your egg config in here
   config.middleware = [
     // 加载错误处理中间件
     'errorHandler',
     // 加载鉴权中间件
-    'adminAuthority'
+    'adminAuthority',
+    // 加载日志记录中间件
+    'adminLog'
   ];
 
   config.errorHandler = {
@@ -55,6 +64,10 @@ export default (appInfo: EggAppInfo) => {
   };
 
   config.adminAuthority = {
+    match: '/api'
+  };
+
+  config.adminLog = {
     match: '/api'
   };
 

@@ -6,6 +6,9 @@ import * as moment from 'moment';
 import * as CryptoJS from 'crypto-js';
 import * as NodeRSA from 'node-rsa';
 import * as jwt from 'jsonwebtoken';
+import resCode from '../../config/resCode';
+
+export type IResCode = keyof typeof resCode;
 
 /**
  * 使用 openssl 生成公钥/私钥
@@ -142,13 +145,22 @@ export default {
   getIp (this: IHelper): string {
     const req = this.ctx.req as any;
 
-    console.log(req);
-
     return (
       req?.headers['x-forwarded-for'] || // 判断是否有反向代理 IP
       req?.connection?.remoteAddress || // 判断 connection 的远程 IP
       req?.socket?.remoteAddress || // 判断后端的 socket 的 IP
       req?.connection?.socket?.remoteAddress
     ).replace('::ffff:', '');
+  },
+
+  /**
+   * 获取返回码对应的信息
+   * @param code - 返回码
+   * @return 信息
+   */
+  getResMessage (code: IResCode): string {
+    const message = resCode[code][0];
+
+    return message;
   }
 };

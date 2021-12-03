@@ -1,14 +1,73 @@
 import { Controller } from 'egg';
+import _ = require('lodash');
 import { Equal } from 'typeorm';
 import { PageGetDto } from '../dto/common/common';
+import { IResCode } from '../extend/helper';
+import { formateDateField } from '../libs/utils';
 
 export interface IResponseOptions {
   data?: any;
-  code?: number;
+  code?: IResCode;
   message?: string;
 }
 
+/**
+ * @apiDefine BaseReq
+ * @apiParam {Number} [isShow=0] 是否显示
+ * @apiParam {Number} [sort=0] 排序
+ */
+
+/**
+ * @apiDefine PageReq
+ * @apiParam {Number} [isShow] 是否显示
+ * @apiParam {Number} [current=1] 当前页码
+ * @apiParam {Number} [pageSize=10] 每页数据量
+ * @apiParam {String} [sortField] 排序字段
+ * @apiParam {String} [sortDesc] 是否逆序排序
+ */
+
+/**
+ * @apiDefine Auth
+ * @apiHeader {String} Authorization Bearer Token
+ */
+
+/**
+ * @apiDefine BaseRes
+ * @apiSuccess {Number} code 返回码，成功则返回200
+ * @apiSuccess {String} message 提示信息，成功则返回“操作成功”
+ * @apiSuccess {Object} data -
+ */
+
+/**
+ * @apiDefine InfoRes
+ * @apiUse BaseRes
+ * @apiSuccess {String} data.id 主键id
+ * @apiSuccess {Number} data.sort 排序
+ * @apiSuccess {Number} data.isShow 是否显示
+ * @apiSuccess {String} data.operator 操作员
+ * @apiSuccess {String} data.createdTime 创建时间
+ * @apiSuccess {String} data.updatedTime 最后更新时间
+ */
+
+/**
+* @apiDefine PageRes
+* @apiUse BaseRes
+* @apiSuccess {Object[]} data.records 查询数据列表
+* @apiSuccess {String} data.records.id 主键id
+* @apiSuccess {Number} data.records.sort 排序
+* @apiSuccess {Number} data.records.isShow 是否显示
+* @apiSuccess {String} data.records.operator 操作员
+* @apiSuccess {String} data.records.createdTime 创建时间
+* @apiSuccess {String} data.records.updatedTime 最后更新时间
+* @apiSuccess {Number} data.current 当前页码
+* @apiSuccess {Number} data.pageSize 每页数据量
+* @apiSuccess {Number} data.total 总数量
+*/
+
 export default abstract class BaseController extends Controller {
+  // 格式化日期字段
+  protected formateDateField = formateDateField;
+
   /**
    * 获取查询参数
    */
@@ -48,19 +107,32 @@ export default abstract class BaseController extends Controller {
       : { skip: (current - 1) * pageSize, take: pageSize };
 
     const order = !sortField || !sortDesc
-      ? undefined
+      ? { order: { sort: 'DESC' as any, createdTime: 'DESC' as any } } // 默认排序为根据排序字段和创建时间逆序
       : { order: { [sortField]: (sortDesc ? 'DESC' : 'AST') as any } };
 
-    return {
-      where: {
-        ...Object.entries(where).reduce((prev, [key, value]) => {
-          if (value) {
-            prev[key] = Equal(value);
-          }
-          return prev;
-        }, {}),
+    let _where = Object.entries(where).reduce((prev, [key, value]) => {
+      if (value) {
+        prev[key] = Equal(value);
+      }
+      return prev;
+    }, {});
+
+    if (_.isArray(whereOpts)) {
+      _where = whereOpts.map(item => {
+        return {
+          ...item,
+          ..._where
+        };
+      });
+    } else {
+      _where = {
+        ..._where,
         ...whereOpts
-      },
+      };
+    }
+
+    return {
+      where: _where,
       ...order,
       ...limit,
     };
@@ -86,13 +158,16 @@ export default abstract class BaseController extends Controller {
   /**
    * 返回响应体
    */
-  protected res (options: IResponseOptions = {}): void {
+  protected res (options: IResponseOptions = {}, status = 200): void {
     const { ctx } = this;
     ctx.set('Content-Type', 'application/json');
+
+    const code = options?.code ?? 200;
+    ctx.status = status;
     ctx.body = {
-      code: options?.code ?? 200,
+      code,
       data: options?.data ?? null,
-      message: options?.message ?? 'success'
+      message: options?.message || this.getHelper().getResMessage(code),
     };
   }
 }

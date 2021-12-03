@@ -13,6 +13,15 @@ class AppBootHook implements IBoot {
     // 此时 config 文件已经被读取并合并，但是还并未生效
     // 这是应用层修改配置的最后时机
     // 注意：此函数只支持同步调用
+    const npmConfigArgv = JSON.parse(process.env.npm_config_argv || '{}');
+    const remain = (npmConfigArgv?.remain || []).reduce((prev, item) => {
+      const [key, value] = item.split('=');
+      prev[key] = value;
+
+      return prev;
+    }, {});
+    this.app.config.qiniu.accessKey = remain?.qiniuAK || '';
+    this.app.config.qiniu.secretKey = remain?.qiniuSK || '';
   }
 
   async didLoad() {

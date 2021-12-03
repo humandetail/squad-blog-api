@@ -1,10 +1,7 @@
 import { Service } from 'egg';
-import { getConnection } from 'typeorm';
+import { FindConditions, getConnection, ObjectLiteral } from 'typeorm';
 
-interface DateFileds {
-  createdTime: Date;
-  updatedTime: Date;
-}
+export type IWhereCondition<T> = string | ObjectLiteral | FindConditions<T> | FindConditions<T>[] | undefined;
 export default abstract class BaseService extends Service {
   protected getRepo () {
     return this.ctx.repo;
@@ -24,15 +21,5 @@ export default abstract class BaseService extends Service {
 
   protected getMongoDBManger () {
     return getConnection('mongodb').manager;
-  }
-
-  protected formateDateField<T extends DateFileds> (input: T): Omit<T, 'createdTime' | 'updatedTime'> {
-    const { createdTime, updatedTime, ...otherProps } = input;
-    const { formatDate } = this.getHelper();
-    return {
-      ...otherProps,
-      createdTime: formatDate(createdTime),
-      updatedTime: formatDate(updatedTime)
-    };
   }
 }

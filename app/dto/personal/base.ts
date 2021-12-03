@@ -100,6 +100,15 @@ export class UpdatePersonalBaseDto extends CreatePersonalBaseDto {
   nickname: string;
 }
 
+export class EditPersonalBaseDto {
+  @IsInt({ message: '是否为默认字段必须是0或者1' })
+  @Min(0, { message: '是否为默认字段必须是0或者1' })
+  @Max(1, { message: '是否为默认字段必须是0或者1' })
+  @Transform(v => v && parseInt(v), { toClassOnly: true })
+  @Expose()
+  isDefault: number;
+}
+
 export class QueryPersonalBasesDto extends PageGetDto {
   @IsOptional()
   @IsIn(['nickname', 'qq', 'blog', 'email', 'github', 'operator'])

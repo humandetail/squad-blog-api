@@ -38,6 +38,7 @@
     "mysql": "^2.18.1",
     "nanoid": "^3.1.30",
     "node-rsa": "^1.1.1",
+    "qiniu": "^7.4.0",
     "typeorm": "^0.2.40"
   },
   "devDependencies": {

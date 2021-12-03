@@ -1,7 +1,6 @@
 import {
   IsNumberString,
   IsOptional,
-  IsIn,
   IsInt,
   Min,
   Max,
@@ -10,10 +9,40 @@ import {
 } from 'class-validator';
 import { Expose, Transform } from 'class-transformer';
 
-// 更新
+// 切换显示隐藏
+export class BaseToggleShowDto {
+  @IsInt({ message: '是否显示字段必须是0或者1' })
+  @Min(0, { message: '是否显示字段必须是0或者1' })
+  @Max(1, { message: '是否显示字段必须是0或者1' })
+  @Transform(v => v && parseInt(v), { toClassOnly: true })
+  @Expose()
+  isShow: number;
+}
+
+// 创建
+
 export class BaseUpdateDto {
   @IsOptional()
-  @IsIn([0, 1, '0', '1'], { message: '是否显示字段必须是0或者1' })
+  @IsInt({ message: '是否显示字段必须是0或者1' })
+  @Min(0, { message: '是否显示字段必须是0或者1' })
+  @Max(1, { message: '是否显示字段必须是0或者1' })
+  @Transform(v => v && parseInt(v), { toClassOnly: true })
+  @Expose()
+  isShow?: number;
+
+  @IsOptional()
+  @IsNumberString(undefined, { message: '排序值必须是数值类型' })
+  @Expose()
+  sort?: number;
+}
+
+// 更新
+export class BaseCreateDto {
+  @IsOptional()
+  @IsInt({ message: '是否显示字段必须是0或者1' })
+  @Min(0, { message: '是否显示字段必须是0或者1' })
+  @Max(1, { message: '是否显示字段必须是0或者1' })
+  @Transform(v => v && parseInt(v), { toClassOnly: true })
   @Expose()
   isShow?: number;
 

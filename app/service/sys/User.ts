@@ -1,6 +1,5 @@
 import { CreateUserDto } from '../../dto/sys/user';
-import BaseService from '../BaseService';
-import * as _ from 'lodash';
+import BaseService, { IWhereCondition } from '../BaseService';
 import User from '../../entities/mysql/sys/User';
 import { FindManyOptions } from 'typeorm';
 
@@ -29,17 +28,16 @@ export default class UserService extends BaseService {
 
     const exists = await this.getRepo().sys.User.findOne({ username });
 
-    if (!_.isEmpty(exists)) {
+    if (exists) {
       // 用户已存在
       return false;
     }
 
     // 开启事务
-    // 1. 添加用户
-    // 2. 创建用户基本信息
     await this.ctx.ormManager.transaction(async manager => {
       const user = manager.create(this.getEntity().sys.User, userInfo);
 
+      // 1. 添加用户
       await manager.save(user);
 
       const personalBase = manager.create(this.getEntity().personal.PersonalBase, {
@@ -51,9 +49,11 @@ export default class UserService extends BaseService {
         email: '',
         intro: '',
         operator: user.username,
-        isShow: 1
+        isShow: 1,
+        isDefault: 1
       });
 
+      // 2. 创建用户基本信息
       await manager.save(personalBase);
     });
 
@@ -77,10 +77,10 @@ export default class UserService extends BaseService {
       const helper = this.getHelper();
       const { password, newPassword } = userInfo as IUpdatePasswordInfo;
       if (helper.passwordEncrypt.call(helper, password, user.salt) !== user.password) {
-        return false;
+        this.ctx.throw(this.getHelper().getResMessage(10005), 10005);
       }
 
-      user!.password = helper.passwordEncrypt.call(helper, newPassword, user.salt);
+      user.password = helper.passwordEncrypt.call(helper, newPassword, user.salt);
 
       await this.getRepo().sys.User.save(user);
 
@@ -88,11 +88,11 @@ export default class UserService extends BaseService {
     }
 
     // 更新用户信息操作
-    const { isLock, isShow, sort, operator, lastLogin } = userInfo as IUserInfo;
+    const { isLock, isShow, sort, lastLogin } = userInfo as IUserInfo;
     user.isLock = isLock ?? user.isLock;
     user.isShow = isShow ?? user.isShow;
     user.sort = sort ?? user.sort;
-    user.operator = operator ?? user.operator;
+    user.operator = this.ctx?.token?.username || user.operator;
     user.lastLogin = (lastLogin ?? user.lastLogin) as any;
 
     await this.getRepo().sys.User.save(user);
@@ -100,23 +100,22 @@ export default class UserService extends BaseService {
     return true;
   }
 
-  // 查询
-  async getUserInfo (id: string) {
-    const user = await this.getRepo().sys.User.findOne(id);
-    if (!user) {
-      throw new Error('用户不存在');
+  async findOne (where: IWhereCondition<User>, showPersonalBase = false) {
+    const user = await this.getRepo().sys.User.findOne({ where });
+
+    if (user && showPersonalBase) {
+      const personalBase = await this.service.personal.base.findOne({ user, isDefault: 1, isShow: 1 }, ['avatar']);
+      if (personalBase) {
+        user.personalBases = [personalBase];
+      }
     }
-    // TODO: 获取 base 和 avatar 信息
-    return this.formatUser(user);
+
+    return user;
   }
 
   // 分页查询
   async getUsers (options: FindManyOptions) {
-    const [users, total] = await this.getRepo().sys.User.findAndCount(options);
-    return {
-      users: users.map(user => this.formatUser(user)),
-      total,
-    };
+    return this.getRepo().sys.User.findAndCount(options);
   }
 
   // 删除用户
@@ -137,20 +136,5 @@ export default class UserService extends BaseService {
     });
 
     return true;
-  }
-
-  /**
-   * 格式化用户信息，移除 password salt 字段，格式化时间字段
-   * @param user - 用户信息
-   * @returns
-   */
-  private formatUser (user: User) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, salt, lastLogin, ...otherProps } = this.formateDateField(user);
-    const { formatDate } = this.getHelper();
-    return {
-      ...otherProps,
-      lastLogin: lastLogin ? formatDate(lastLogin) : null
-    };
   }
 }

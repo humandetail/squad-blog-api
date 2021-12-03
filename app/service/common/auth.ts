@@ -1,62 +1,47 @@
 import BaseService from '../BaseService';
-import { LoginDto } from '../../dto/common/auth';
-import { Equal } from 'typeorm';
-import Log from '../../entities/mongodb/sys/Log';
+import User from '../../entities/mysql/sys/User';
 
 export const RedisTokenKey = 'squad-admin-token-';
 
 export default class AuthService extends BaseService {
-  // 校验用户名和密码
-  async verifyUser ({ username, password }: LoginDto) {
-    const user = await this.getRepo().sys.User.findOne({
-      username: Equal(username)
-    });
-
-    if (!user || user.isShow !== 1) {
-      return false;
-    }
-
-    // 校验密码
-    if (this.getHelper().passwordEncrypt(password, user.salt) !== user.password) {
-      return false;
-    }
-
-    if (user.isLock !== 0) {
-      throw new Error('用户被锁定，禁止登录');
-    }
-
-    return user.id;
-  }
-
   // 获取 token
-  async getToken (id: string) {
+  async getToken (user: User) {
     // 获取用户信息
-    const user = await this.service.sys.user.getUserInfo(id);
+    // const user = await this.service.sys.user.getUserInfo(id);
+    const id = user.id;
 
     // 更新用户最后登录时间
-    user.lastLogin = this.getHelper().now();
+    user.lastLogin = this.getHelper().now() as any;
 
-    const token = this.getHelper().jwtSign(user, { expiresIn: '24h' });
+    const token = this.getHelper().jwtSign(
+      {
+        id: user.id,
+        username: user.username,
+        isLock: user.isLock,
+        isShow: user.isShow,
+        lastLogin: user.lastLogin
+      },
+      { expiresIn: '24h' }
+    );
 
     // 存储 token 信息到 redis
     await this.getRedis().set(`${RedisTokenKey}${id}`, token);
 
     try {
       // 更新用户最后登录时间
-      this.service.sys.user.update(id, { lastLogin: user.lastLogin }).catch(() => { /**/ });
+      this.getRepo().sys.User.save(user);
 
-      // 记录用户登录日志
-      const log = new Log();
-      log.action = 'login';
-      log.content = '登录了系统';
-      log.ip = this.getHelper().getIp();
-      log.module = 'auth';
-      log.result = 'success';
-      log.username = user.username;
-      this.getMongoDBManger().save(Log, log);
+      // // 记录用户登录日志
+      // this.service.sys.log.create({
+      //   ip: this.getHelper().getIp(),
+      //   action: 'login',
+      //   module: 'auth',
+      //   content: '登录了系统',
+      //   result: 'success',
+      //   username: user.username
+      // });
     } catch (e) {
-      // ...
-      console.log(e);
+      // eslint no-empty
     }
 
     return token;

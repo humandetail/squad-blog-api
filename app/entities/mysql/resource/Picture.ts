@@ -35,21 +35,6 @@ export default class Picture extends BaseEntity {
   })
   qiniuKey: string;
 
-  @Column({
-    comment: '图片宽度'
-  })
-  width: number;
-
-  @Column({
-    comment: '图片高度'
-  })
-  height: number;
-
-  @Column({
-    comment: '图片大小'
-  })
-  size: number;
-
   @OneToMany(() => Post, post => post.cover)
   posts: Post[];
 

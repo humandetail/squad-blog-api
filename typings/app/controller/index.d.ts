@@ -3,23 +3,27 @@
 
 import 'egg';
 import ExportBaseController from '../../../app/controller/BaseController';
-import ExportApiDocTest from '../../../app/controller/apiDocTest';
-import ExportHome from '../../../app/controller/home';
 import ExportBackendCommonAuth from '../../../app/controller/backend/common/Auth';
-import ExportBackendPersonalBase from '../../../app/controller/backend/personal/base';
+import ExportBackendPersonalBase from '../../../app/controller/backend/personal/Base';
+import ExportBackendResourcePictureCategory from '../../../app/controller/backend/resource/picture/Category';
+import ExportBackendResourcePicturePicture from '../../../app/controller/backend/resource/picture/Picture';
 import ExportBackendSysUserUser from '../../../app/controller/backend/sys/user/User';
 
 declare module 'egg' {
   interface IController {
     baseController: ExportBaseController;
-    apiDocTest: ExportApiDocTest;
-    home: ExportHome;
     backend: {
       common: {
         auth: ExportBackendCommonAuth;
       }
       personal: {
         base: ExportBackendPersonalBase;
+      }
+      resource: {
+        picture: {
+          category: ExportBackendResourcePictureCategory;
+          picture: ExportBackendResourcePicturePicture;
+        }
       }
       sys: {
         user: {
