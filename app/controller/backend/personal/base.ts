@@ -134,7 +134,6 @@ export default class PersonalBaseController extends BaseController {
     });
   }
 
-
   /**
    * @api {get} /personal/bases 获取个人基本信息列表
    * @apiGroup Personal - Base
@@ -179,8 +178,8 @@ export default class PersonalBaseController extends BaseController {
   }
 
   /**
-   * @api {delete} /users/:id 删除个人基本信息
-   * @apiGroup System - User
+   * @api {delete} /personal/bases/:id 删除个人基本信息
+   * @apiGroup Personal - Base
    * @apiUse Auth
    * @apiUse BaseRes
    */

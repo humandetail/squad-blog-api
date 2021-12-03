@@ -20,7 +20,7 @@ export default function errorHandler (): any {
       ctx.body = JSON.stringify({
         code: err.errorCode || err.status || 500,
         data: null,
-        message: status === 422 && ctx.app.config.env !== 'prod'
+        message: status === 422 && ctx.app.config.env !== 'prod' && err.errors
           ? formatErrors(err.errors)
           : message
       });

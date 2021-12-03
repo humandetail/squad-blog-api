@@ -4,6 +4,7 @@
 
 import * as moment from 'moment';
 import PersonalBase from '../entities/mysql/personal/PersonalBase';
+import PersonalSkill from '../entities/mysql/personal/PersonalSkill';
 import User from '../entities/mysql/sys/User';
 
 interface DateFileds {
@@ -86,5 +87,35 @@ export function formatPersonalBase (baseInfo: PersonalBase) {
     username,
     avatarId,
     avatarPic
+  });
+}
+
+/**
+ * 格式化返回的个人技能信息
+ */
+export function formatPersonalSkill (skillInfo: PersonalSkill) {
+  const { base, icon, ...other } = skillInfo;
+
+  let baseId: number | null = null;
+  let baseNickname = '';
+  let iconId: number | null = null;
+  let iconPic = '';
+
+  if (base) {
+    baseId = base.id;
+    baseNickname = base.nickname;
+  }
+
+  if (icon) {
+    iconId = icon.id;
+    iconPic = icon.qiniuDomain + icon.qiniuKey;
+  }
+
+  return formateDateField({
+    ...other,
+    baseId,
+    baseNickname,
+    iconId,
+    iconPic
   });
 }
