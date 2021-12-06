@@ -7,7 +7,7 @@ import BaseController from '../../BaseController';
 export default class BlogrollController extends BaseController {
   /**
    * @api {post} /blogrolls 创建友情链接信息
-   * @apiGroup Blogroll
+   * @apiGroup Resource - Blogroll
    * @apiParam {String} name 名称
    * @apiParam {String} link 链接
    * @apiParam {String} remarks 备注
@@ -40,7 +40,7 @@ export default class BlogrollController extends BaseController {
 
   /**
    * @api {put} /blogrolls/:id 修改友情链接
-   * @apiGroup Blogroll
+   * @apiGroup Resource - Blogroll
    * @apiParam {String} name 名称
    * @apiParam {String} link 链接
    * @apiParam {String} remarks 备注
@@ -69,7 +69,7 @@ export default class BlogrollController extends BaseController {
 
   /**
    * @api {put} /blogrolls/:id/show 更改友情链接显示状态
-   * @apiGroup Blogroll
+   * @apiGroup Resource - Blogroll
    * @apiParam {Number} isShow 是否显示
    * @apiUse Auth
    * @apiUse BaseRes
@@ -92,7 +92,7 @@ export default class BlogrollController extends BaseController {
 
   /**
    * @api {get} /blogrolls/:id 获取友情链接详情
-   * @apiGroup Blogroll
+   * @apiGroup Resource - Blogroll
    * @apiUse Auth
    * @apiUse InfoRes
    * @apiSuccess {Object} data
@@ -152,7 +152,7 @@ export default class BlogrollController extends BaseController {
 
   /**
    * @api {delete} /blogrolls/:id 删除友情链接
-   * @apiGroup Blogroll
+   * @apiGroup Resource - Blogroll
    * @apiUse Auth
    * @apiUse BaseRes
    */
