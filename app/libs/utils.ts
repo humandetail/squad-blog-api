@@ -5,6 +5,7 @@
 import * as moment from 'moment';
 import PersonalBase from '../entities/mysql/personal/PersonalBase';
 import PersonalSkill from '../entities/mysql/personal/PersonalSkill';
+import PersonalWork from '../entities/mysql/personal/PersonalWork';
 import User from '../entities/mysql/sys/User';
 
 interface DateFileds {
@@ -117,5 +118,26 @@ export function formatPersonalSkill (skillInfo: PersonalSkill) {
     baseNickname,
     iconId,
     iconPic
+  });
+}
+
+/**
+ * 格式化返回的个人作品集信息
+ */
+export function formatPersonalWork (personalWork: PersonalWork) {
+  const { base, pictures, ...other } = personalWork;
+
+  let baseId: number | null = null;
+  let baseNickname = '';
+
+  if (base) {
+    baseId = base.id;
+    baseNickname = base.nickname;
+  }
+  return formateDateField({
+    ...other,
+    baseId,
+    baseNickname,
+    pictures: pictures.map(({ id, qiniuDomain, qiniuKey }) => ({ id, url: qiniuDomain + qiniuKey }))
   });
 }

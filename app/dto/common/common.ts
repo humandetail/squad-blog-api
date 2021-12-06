@@ -1,5 +1,4 @@
 import {
-  IsNumberString,
   IsOptional,
   IsInt,
   Min,
@@ -19,8 +18,7 @@ export class BaseToggleShowDto {
   isShow: number;
 }
 
-// 创建
-
+// 更新
 export class BaseUpdateDto {
   @IsOptional()
   @IsInt({ message: '是否显示字段必须是0或者1' })
@@ -30,13 +28,15 @@ export class BaseUpdateDto {
   @Expose()
   isShow?: number;
 
+
   @IsOptional()
-  @IsNumberString(undefined, { message: '排序值必须是数值类型' })
+  @IsInt({ message: '排序值必须是数值类型' })
+  @Transform(v => v && parseInt(v), { toClassOnly: true })
   @Expose()
   sort?: number;
 }
 
-// 更新
+// 创建
 export class BaseCreateDto {
   @IsOptional()
   @IsInt({ message: '是否显示字段必须是0或者1' })
@@ -47,7 +47,8 @@ export class BaseCreateDto {
   isShow?: number;
 
   @IsOptional()
-  @IsNumberString(undefined, { message: '排序值必须是数值类型' })
+  @IsInt({ message: '排序值必须是数值类型' })
+  @Transform(v => v && parseInt(v), { toClassOnly: true })
   @Expose()
   sort?: number;
 }

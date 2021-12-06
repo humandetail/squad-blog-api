@@ -34,9 +34,9 @@ function formatErrors (errors: any) {
   }
 
   if (_.isArray(errors)) {
-    return errors.reduce((prev, item) => {
-      return prev + Object.values(item.constraints).join(';') + ';';
-    }, '');
+    return [...new Set(errors.reduce((prev, item) => {
+      return prev.concat(Object.values(item.constraints));
+    }, []))].join(';');
   }
 
   return errors;

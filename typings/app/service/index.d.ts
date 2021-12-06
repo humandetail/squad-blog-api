@@ -11,6 +11,7 @@ import ExportCommonAuth from '../../../app/service/common/auth';
 import ExportCommonQiniu from '../../../app/service/common/qiniu';
 import ExportPersonalBase from '../../../app/service/personal/Base';
 import ExportPersonalSkill from '../../../app/service/personal/Skill';
+import ExportPersonalWork from '../../../app/service/personal/Work';
 import ExportResourcePicture from '../../../app/service/resource/Picture';
 import ExportResourcePictureCategory from '../../../app/service/resource/PictureCategory';
 import ExportSysLog from '../../../app/service/sys/Log';
@@ -26,6 +27,7 @@ declare module 'egg' {
     personal: {
       base: AutoInstanceType<typeof ExportPersonalBase>;
       skill: AutoInstanceType<typeof ExportPersonalSkill>;
+      work: AutoInstanceType<typeof ExportPersonalWork>;
     }
     resource: {
       picture: AutoInstanceType<typeof ExportResourcePicture>;
