@@ -8,6 +8,7 @@ import ExportBackendPersonalBase from '../../../app/controller/backend/personal/
 import ExportBackendPersonalSKill from '../../../app/controller/backend/personal/SKill';
 import ExportBackendPersonalWork from '../../../app/controller/backend/personal/Work';
 import ExportBackendResourceBlogroll from '../../../app/controller/backend/resource/Blogroll';
+import ExportBackendSysSetting from '../../../app/controller/backend/sys/Setting';
 import ExportBackendResourcePictureCategory from '../../../app/controller/backend/resource/picture/Category';
 import ExportBackendResourcePicturePicture from '../../../app/controller/backend/resource/picture/Picture';
 import ExportBackendSysUserUser from '../../../app/controller/backend/sys/user/User';
@@ -32,6 +33,7 @@ declare module 'egg' {
         }
       }
       sys: {
+        setting: ExportBackendSysSetting;
         user: {
           user: ExportBackendSysUserUser;
         }

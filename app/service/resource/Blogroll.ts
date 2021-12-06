@@ -32,6 +32,8 @@ export default class BlogrollService extends BaseService {
       }
     });
 
+    blogroll.operator = this.ctx.token.username;
+
     await this.getRepo().resource.Blogroll.save(blogroll);
 
     return true;

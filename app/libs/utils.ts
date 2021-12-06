@@ -6,6 +6,7 @@ import * as moment from 'moment';
 import PersonalBase from '../entities/mysql/personal/PersonalBase';
 import PersonalSkill from '../entities/mysql/personal/PersonalSkill';
 import PersonalWork from '../entities/mysql/personal/PersonalWork';
+import Setting from '../entities/mysql/sys/Setting';
 import User from '../entities/mysql/sys/User';
 
 interface DateFileds {
@@ -139,5 +140,24 @@ export function formatPersonalWork (personalWork: PersonalWork) {
     baseId,
     baseNickname,
     pictures: pictures.map(({ id, qiniuDomain, qiniuKey }) => ({ id, url: qiniuDomain + qiniuKey }))
+  });
+}
+
+/**
+ * 格式化返回的网站设置信息
+ */
+export function formatSetting ({ logo, ...setting }: Setting) {
+  let logoId: number | null = null;
+  let logoPic = '';
+
+  if (logo) {
+    logoId = logo.id;
+    logoPic = logo.qiniuDomain + logo.qiniuKey;
+  }
+
+  return formateDateField({
+    ...setting,
+    logoId,
+    logoPic
   });
 }

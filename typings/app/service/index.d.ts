@@ -16,6 +16,7 @@ import ExportResourceBlogroll from '../../../app/service/resource/Blogroll';
 import ExportResourcePicture from '../../../app/service/resource/Picture';
 import ExportResourcePictureCategory from '../../../app/service/resource/PictureCategory';
 import ExportSysLog from '../../../app/service/sys/Log';
+import ExportSysSetting from '../../../app/service/sys/Setting';
 import ExportSysUser from '../../../app/service/sys/User';
 
 declare module 'egg' {
@@ -37,6 +38,7 @@ declare module 'egg' {
     }
     sys: {
       log: AutoInstanceType<typeof ExportSysLog>;
+      setting: AutoInstanceType<typeof ExportSysSetting>;
       user: AutoInstanceType<typeof ExportSysUser>;
     }
   }

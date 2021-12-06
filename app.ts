@@ -1,5 +1,6 @@
 import { Application } from 'egg';
 import { IBoot } from 'egg';
+import { initSetting } from './app/libs/initSetting';
 import { initUser } from './app/libs/initUser';
 
 class AppBootHook implements IBoot {
@@ -37,6 +38,7 @@ class AppBootHook implements IBoot {
   async didReady() {
     // 应用已经启动完毕
     await initUser(this.app);
+    await initSetting(this.app);
   }
 
   async serverDidReady() {

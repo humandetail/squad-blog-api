@@ -101,6 +101,8 @@ export default class PersonalWorkService extends BaseService {
       }
     });
 
+    work.operator = this.ctx.token.username;
+
     await this.getRepo().personal.PersonalWork.save(work);
 
     return true;

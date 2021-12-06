@@ -62,6 +62,8 @@ export default class PersonalSkillService extends BaseService {
       }
     });
 
+    skill.operator = this.ctx.token.username;
+
     await this.getRepo().personal.PersonalSkill.save(skill);
 
     return true;
