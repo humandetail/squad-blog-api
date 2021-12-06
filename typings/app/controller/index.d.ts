@@ -7,6 +7,7 @@ import ExportBackendCommonAuth from '../../../app/controller/backend/common/Auth
 import ExportBackendPersonalBase from '../../../app/controller/backend/personal/Base';
 import ExportBackendPersonalSKill from '../../../app/controller/backend/personal/SKill';
 import ExportBackendPersonalWork from '../../../app/controller/backend/personal/Work';
+import ExportBackendPostCategory from '../../../app/controller/backend/post/Category';
 import ExportBackendResourceBlogroll from '../../../app/controller/backend/resource/Blogroll';
 import ExportBackendSysSetting from '../../../app/controller/backend/sys/Setting';
 import ExportBackendResourcePictureCategory from '../../../app/controller/backend/resource/picture/Category';
@@ -24,6 +25,9 @@ declare module 'egg' {
         base: ExportBackendPersonalBase;
         sKill: ExportBackendPersonalSKill;
         work: ExportBackendPersonalWork;
+      }
+      post: {
+        category: ExportBackendPostCategory;
       }
       resource: {
         blogroll: ExportBackendResourceBlogroll;
