@@ -15,6 +15,20 @@ export default class PostTemplate extends BaseEntity {
   })
   name: string;
 
+  @Column({
+    name: 'qiniu_domain',
+    length: 128,
+    comment: 'qiniu oss 域名'
+  })
+  qiniuDomain: string;
+
+  @Column({
+    name: 'qiniu_key',
+    length: 64,
+    comment: 'qiniu 文件名称'
+  })
+  qiniuKey: string;
+
   @OneToMany(() => Post, post => post.template)
   posts: Post[];
 
