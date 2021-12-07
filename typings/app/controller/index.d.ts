@@ -8,6 +8,7 @@ import ExportBackendPersonalBase from '../../../app/controller/backend/personal/
 import ExportBackendPersonalSKill from '../../../app/controller/backend/personal/SKill';
 import ExportBackendPersonalWork from '../../../app/controller/backend/personal/Work';
 import ExportBackendPostCategory from '../../../app/controller/backend/post/Category';
+import ExportBackendPostPost from '../../../app/controller/backend/post/Post';
 import ExportBackendPostTag from '../../../app/controller/backend/post/Tag';
 import ExportBackendResourceBlogroll from '../../../app/controller/backend/resource/Blogroll';
 import ExportBackendResourcePostTemplate from '../../../app/controller/backend/resource/PostTemplate';
@@ -30,6 +31,7 @@ declare module 'egg' {
       }
       post: {
         category: ExportBackendPostCategory;
+        post: ExportBackendPostPost;
         tag: ExportBackendPostTag;
       }
       resource: {

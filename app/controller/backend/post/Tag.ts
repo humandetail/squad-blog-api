@@ -130,7 +130,7 @@ export default class TagController extends BaseController {
 
     this.res({
       data: this.pageWrapper(
-        tags.map(v => this.formateDateField(v)),
+        tags.map(v => this.formatDateField(v)),
         dto.current,
         dto.pageSize,
         total
@@ -161,7 +161,7 @@ export default class TagController extends BaseController {
     }
 
     this.res({
-      data: this.formateDateField(tag)
+      data: this.formatDateField(tag)
     });
   }
 

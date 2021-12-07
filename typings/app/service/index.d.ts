@@ -13,6 +13,7 @@ import ExportPersonalBase from '../../../app/service/personal/Base';
 import ExportPersonalSkill from '../../../app/service/personal/Skill';
 import ExportPersonalWork from '../../../app/service/personal/Work';
 import ExportPostCategory from '../../../app/service/post/Category';
+import ExportPostPost from '../../../app/service/post/Post';
 import ExportPostTag from '../../../app/service/post/Tag';
 import ExportResourceBlogroll from '../../../app/service/resource/Blogroll';
 import ExportResourcePicture from '../../../app/service/resource/Picture';
@@ -36,6 +37,7 @@ declare module 'egg' {
     }
     post: {
       category: AutoInstanceType<typeof ExportPostCategory>;
+      post: AutoInstanceType<typeof ExportPostPost>;
       tag: AutoInstanceType<typeof ExportPostTag>;
     }
     resource: {

@@ -9,6 +9,7 @@ import PersonalWork from '../entities/mysql/personal/PersonalWork';
 import PostTemplate from '../entities/mysql/resource/PostTemplate';
 import Setting from '../entities/mysql/sys/Setting';
 import User from '../entities/mysql/sys/User';
+import { IPostWithViewCount } from '../service/post/Post';
 
 interface DateFileds {
   createdTime: Date;
@@ -21,7 +22,7 @@ export function formatDate (date: Date, format = 'YYYY-MM-DD HH:mm:ss') {
   return moment(date).format(format);
 }
 
-export function formateDateField<T extends DateFileds> (input: T): Omit<T, 'createdTime' | 'updatedTime'> & { createdTime: string; updatedTime: string; } {
+export function formatDateField<T extends DateFileds> (input: T): Omit<T, 'createdTime' | 'updatedTime'> & { createdTime: string; updatedTime: string; } {
   const { createdTime, updatedTime, ...otherProps } = input;
   return {
     ...otherProps,
@@ -56,7 +57,7 @@ export const formatUserInfo = (userInfo: User) => {
     };
   }
 
-  return formateDateField({
+  return formatDateField({
     ...user,
     ...additionalUser,
     lastLogin: lastLogin ? formatDate(lastLogin) : ''
@@ -84,7 +85,7 @@ export function formatPersonalBase (baseInfo: PersonalBase) {
     avatarPic = avatar.qiniuDomain + avatar.qiniuKey;
   }
 
-  return formateDateField({
+  return formatDateField({
     ...other,
     userId,
     username,
@@ -114,7 +115,7 @@ export function formatPersonalSkill (skillInfo: PersonalSkill) {
     iconPic = icon.qiniuDomain + icon.qiniuKey;
   }
 
-  return formateDateField({
+  return formatDateField({
     ...other,
     baseId,
     baseNickname,
@@ -136,7 +137,7 @@ export function formatPersonalWork (personalWork: PersonalWork) {
     baseId = base.id;
     baseNickname = base.nickname;
   }
-  return formateDateField({
+  return formatDateField({
     ...other,
     baseId,
     baseNickname,
@@ -156,7 +157,7 @@ export function formatSetting ({ logo, ...setting }: Setting) {
     logoPic = logo.qiniuDomain + logo.qiniuKey;
   }
 
-  return formateDateField({
+  return formatDateField({
     ...setting,
     logoId,
     logoPic
@@ -176,9 +177,53 @@ export function formatPostTemplate ({ cover, ...template }: PostTemplate) {
     coverPic = cover.qiniuDomain + cover.qiniuKey;
   }
 
-  return formateDateField({
+  return formatDateField({
     ...template,
     coverId,
     coverPic
+  });
+}
+
+/**
+ * 格式化返回的文章信息
+ */
+export function formatPost ({
+  tags,
+  cover,
+  category,
+  template,
+  ...post
+}: IPostWithViewCount) {
+  let coverId: number | null = null;
+  let coverPic = '';
+  let categoryId: number | null = null;
+  let categoryName = '';
+  let templateId: number | null = null;
+  let templateName = '';
+
+  if (cover) {
+    coverId = cover.id;
+    coverPic = cover.qiniuDomain + cover.qiniuKey;
+  }
+
+  if (category) {
+    categoryId = category.id;
+    categoryName = category.displayName;
+  }
+
+  if (template) {
+    templateId = template.id;
+    templateName = template.name;
+  }
+
+  return formatDateField({
+    ...post,
+    categoryId,
+    categoryName,
+    coverId,
+    coverPic,
+    tags: tags ? tags.map(({ id, displayName }) => ({ id, displayName })) : [],
+    templateId,
+    templateName
   });
 }

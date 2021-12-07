@@ -130,7 +130,7 @@ export default class PictureCategoryController extends BaseController {
 
     this.res({
       data: this.pageWrapper(
-        categories.map(v => this.formateDateField(v)),
+        categories.map(v => this.formatDateField(v)),
         dto.current,
         dto.pageSize,
         total
@@ -161,7 +161,7 @@ export default class PictureCategoryController extends BaseController {
     }
 
     this.res({
-      data: this.formateDateField(category)
+      data: this.formatDateField(category)
     });
   }
 

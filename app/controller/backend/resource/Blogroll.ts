@@ -112,7 +112,7 @@ export default class BlogrollController extends BaseController {
     }
 
     this.res({
-      data: this.formateDateField(blogroll)
+      data: this.formatDateField(blogroll)
     });
   }
 
@@ -143,7 +143,7 @@ export default class BlogrollController extends BaseController {
 
     this.res({
       data: this.pageWrapper(
-        blogrolls.map(v => this.formateDateField(v)),
+        blogrolls.map(v => this.formatDateField(v)),
         dto.current, dto.pageSize,
         total
       )

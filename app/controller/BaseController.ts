@@ -3,7 +3,7 @@ import _ = require('lodash');
 import { Equal } from 'typeorm';
 import { PageGetDto } from '../dto/common/common';
 import { IResCode } from '../extend/helper';
-import { formateDateField } from '../libs/utils';
+import { formatDateField } from '../libs/utils';
 
 export interface IResponseOptions {
   data?: any;
@@ -66,7 +66,7 @@ export interface IResponseOptions {
 
 export default abstract class BaseController extends Controller {
   // 格式化日期字段
-  protected formateDateField = formateDateField;
+  protected formatDateField = formatDateField;
 
   /**
    * 获取查询参数
