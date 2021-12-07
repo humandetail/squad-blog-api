@@ -133,6 +133,7 @@ export default class PictureController extends BaseController {
       this.res({
         code: 30003
       });
+      return;
     }
     this.res();
   }

@@ -41,7 +41,7 @@ export default class QiniuService extends BaseService {
           if (info.statusCode === 200) {
             resole(body);
           } else {
-            reject(err);
+            reject(err || body?.error || info?.data?.error || '资源上传失败');
           }
         }
       );

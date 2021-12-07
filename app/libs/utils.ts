@@ -6,6 +6,7 @@ import * as moment from 'moment';
 import PersonalBase from '../entities/mysql/personal/PersonalBase';
 import PersonalSkill from '../entities/mysql/personal/PersonalSkill';
 import PersonalWork from '../entities/mysql/personal/PersonalWork';
+import PostTemplate from '../entities/mysql/resource/PostTemplate';
 import Setting from '../entities/mysql/sys/Setting';
 import User from '../entities/mysql/sys/User';
 
@@ -159,5 +160,25 @@ export function formatSetting ({ logo, ...setting }: Setting) {
     ...setting,
     logoId,
     logoPic
+  });
+}
+
+
+/**
+ * 格式化返回的网站设置信息
+ */
+export function formatPostTemplate ({ cover, ...template }: PostTemplate) {
+  let coverId: number | null = null;
+  let coverPic = '';
+
+  if (cover) {
+    coverId = cover.id;
+    coverPic = cover.qiniuDomain + cover.qiniuKey;
+  }
+
+  return formateDateField({
+    ...template,
+    coverId,
+    coverPic
   });
 }
