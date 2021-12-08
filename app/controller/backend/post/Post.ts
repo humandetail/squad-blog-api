@@ -1,6 +1,7 @@
+import { isNull, isUndefined } from 'lodash';
 import { Like, Not } from 'typeorm';
 import { BaseToggleShowDto } from '../../../dto/common/common';
-import { CreatePostDto, QueryPostsDto, UpdatePostDto } from '../../../dto/post/post';
+import { BatchPostCategoryDto, BatchPostDeleteDto, BatchPostShowDto, BatchPostTagDto, BatchPostTemplateDto, CreatePostDto, EBatchTagAction, QueryPostsDto, UpdatePostDto } from '../../../dto/post/post';
 import { AdminRoute } from '../../../libs/decorators/RouterRegister';
 import { formatPost } from '../../../libs/utils';
 import BaseController from '../../BaseController';
@@ -253,6 +254,181 @@ export default class PostController extends BaseController {
 
     if (!result) {
       this.res({ code: 30001 });
+      return;
+    }
+
+    this.res();
+  }
+
+  /**
+   * @api {post} /posts/batchCategory 批处理文章分类
+   * @apiGroup Post - Post
+   * @apiParam {Number} categoryId 需要修改的分类id,为0时表示所有
+   * @apiParam {Number} newCategoryId 新的分类id
+   * @apiParam {Boolean} [isAll] 是否对所有文章执行修改
+   * @apiParam {String[]} [ids] id集合
+   * @apiUse BaseReq
+   * @apiUse Auth
+   * @apiUse BaseRes
+   */
+  @AdminRoute('post', '/posts/batchCategory')
+  async batchCategory () {
+    const { ctx, service } = this;
+
+    const dto = await ctx.validate<BatchPostCategoryDto>(BatchPostCategoryDto);
+
+    if (!dto.isAll && (!dto.ids)) {
+      this.res({
+        code: 422,
+        message: 'isAll 或 ids 字段必须存在其中之一'
+      }, 422);
+      return;
+    }
+
+    const result = await service.post.post.batchCategory(dto);
+
+    if (!result) {
+      this.res({
+        code: 30001
+      });
+      return;
+    }
+
+    this.res();
+  }
+
+  /**
+   * @api {post} /posts/batchTag 批处理文章标签
+   * @apiGroup Post - Post
+   * @apiParam {Number} [tagId] 需要修改的标签id,为0时表示所有
+   * @apiParam {Number} newTagId 新的标签id
+   * @apiParam {String} action 操作 "add" | "change" | "remove"，当为 "change" 时，`tagId`必填
+   * @apiParam {Boolean} [isAll] 是否对所有文章执行修改
+   * @apiParam {String[]} [ids] id集合
+   * @apiUse BaseReq
+   * @apiUse Auth
+   * @apiUse BaseRes
+   */
+  @AdminRoute('post', '/posts/batchTag')
+  async batchTag () {
+    const { ctx, service } = this;
+
+    const dto = await ctx.validate<BatchPostTagDto>(BatchPostTagDto);
+
+    if (dto.action === EBatchTagAction.change && (isUndefined(dto.tagId) || isNull(dto.tagId))) {
+      this.res({
+        message: '`tagId` 字段不能为空'
+      }, 422);
+      return;
+    }
+
+    const result = await service.post.post.batchTag(dto);
+
+    if (!result) {
+      this.res({
+        code: -1,
+        message: '操作失败'
+      });
+      return;
+    }
+
+    this.res();
+  }
+
+  /**
+   * @api {post} /posts/batchTemplate 批处理文章模板
+   * @apiGroup Post - Post
+   * @apiParam {Number} templateId 需要修改的模板id,为0时表示所有
+   * @apiParam {Number} newTemplateId 新的模板id
+   * @apiParam {Boolean} [isAll] 是否对所有文章执行修改
+   * @apiParam {String[]} [ids] id集合
+   * @apiUse BaseReq
+   * @apiUse Auth
+   * @apiUse BaseRes
+   */
+  @AdminRoute('post', '/posts/batchTemplate')
+  async bacthTemplate () {
+    const { ctx, service } = this;
+
+    const dto = await ctx.validate<BatchPostTemplateDto>(BatchPostTemplateDto);
+
+    if (!dto.isAll && (!dto.ids)) {
+      this.res({
+        code: 422,
+        message: 'isAll 或 ids 字段必须存在其中之一'
+      }, 422);
+      return;
+    }
+
+    const result = await service.post.post.batchTemplate(dto);
+
+    if (!result) {
+      this.res({
+        code: 30001
+      });
+      return;
+    }
+
+    this.res();
+  }
+
+  /**
+   * @api {post} /posts/batchShow 批处理文章显示状态
+   * @apiGroup Post - Post
+   * @apiParam {Number} isShow 是否显示
+   * @apiParam {Boolean} [isAll] 是否对所有文章执行修改
+   * @apiParam {String[]} [ids] id集合
+   * @apiUse BaseReq
+   * @apiUse Auth
+   * @apiUse BaseRes
+   */
+  @AdminRoute('post', '/posts/batchShow')
+  async batchShow () {
+    const { ctx, service } = this;
+
+    const dto = await ctx.validate<BatchPostShowDto>(BatchPostShowDto);
+
+    if (!dto.isAll && (!dto.ids)) {
+      this.res({
+        code: 422,
+        message: 'isAll 或 ids 字段必须存在其中之一'
+      }, 422);
+      return;
+    }
+
+    const result = await service.post.post.batchShow(dto);
+
+    if (!result) {
+      this.res({
+        code: 30001
+      });
+      return;
+    }
+
+    this.res();
+  }
+
+  /**
+   * @api {post} /posts/batchDelete 批删除文章
+   * @apiGroup Post - Post
+   * @apiParam {Boolean} [isAll] 是否对所有文章执行修改
+   * @apiParam {String[]} [ids] id集合
+   * @apiUse BaseReq
+   * @apiUse Auth
+   * @apiUse BaseRes
+   */
+  @AdminRoute('post', '/posts/batchDelete')
+  async batchDelete () {
+    const { ctx, service } = this;
+
+    const { ids } = await ctx.validate<BatchPostDeleteDto>(BatchPostDeleteDto);
+
+    const result = await service.post.post.batchDelete(ids);
+
+    if (!result) {
+      this.res({
+        code: 30001
+      });
       return;
     }
 
