@@ -1,6 +1,6 @@
 import { Like } from 'typeorm';
 import { BaseToggleShowDto } from '../../../dto/common/common';
-import { CreatePersonalWorkDto, QueryPersonalWorksDto, UpdatePersonalWorkDto } from '../../../dto/personal/work';
+import { BatchWorkDeleteDto, BatchWorkMountDto, BatchWorkShowDto, CreatePersonalWorkDto, QueryPersonalWorksDto, UpdatePersonalWorkDto } from '../../../dto/personal/work';
 import { AdminRoute } from '../../../libs/decorators/RouterRegister';
 import { formatPersonalWork } from '../../../libs/utils';
 import BaseController from '../../BaseController';
@@ -182,6 +182,106 @@ export default class PersonalWorkController extends BaseController {
       });
       return;
     }
+    this.res();
+  }
+
+  /**
+   * @api {post} /personal/works/batchMount 批处理作品挂载点
+   * @apiGroup Personal - Work
+   * @apiParam {Number} baseId 需要修改的挂载点id,为0时表示所有
+   * @apiParam {Number} newBaseId 新的挂载点id
+   * @apiParam {Boolean} [isAll] 是否对所有作品执行修改
+   * @apiParam {Number[]} [ids] id集合
+   * @apiUse BaseReq
+   * @apiUse Auth
+   * @apiUse BaseRes
+   */
+  @AdminRoute('post', '/personal/works/batchMount')
+  async bacthMount () {
+    const { ctx, service } = this;
+
+    const dto = await ctx.validate<BatchWorkMountDto>(BatchWorkMountDto);
+
+    if (!dto.isAll && (!dto.ids)) {
+      this.res({
+        code: 422,
+        message: 'isAll 或 ids 字段必须存在其中之一'
+      }, 422);
+      return;
+    }
+
+    const result = await service.personal.work.batchMount(dto);
+
+    if (!result) {
+      this.res({
+        code: 30001
+      });
+      return;
+    }
+
+    this.res();
+  }
+
+  /**
+   * @api {post} /personal/works/batchShow 批处理作品显示状态
+   * @apiGroup Personal - Work
+   * @apiParam {Number} isShow 是否显示
+   * @apiParam {Boolean} [isAll] 是否对所有作品执行修改
+   * @apiParam {Number[]} [ids] id集合
+   * @apiUse BaseReq
+   * @apiUse Auth
+   * @apiUse BaseRes
+   */
+  @AdminRoute('post', '/personal/works/batchShow')
+  async batchShow () {
+    const { ctx, service } = this;
+
+    const dto = await ctx.validate<BatchWorkShowDto>(BatchWorkShowDto);
+
+    if (!dto.isAll && (!dto.ids)) {
+      this.res({
+        code: 422,
+        message: 'isAll 或 ids 字段必须存在其中之一'
+      }, 422);
+      return;
+    }
+
+    const result = await service.personal.work.batchShow(dto);
+
+    if (!result) {
+      this.res({
+        code: 30001
+      });
+      return;
+    }
+
+    this.res();
+  }
+
+  /**
+   * @api {post} /personal/works/batchDelete 批删除作品
+   * @apiGroup Personal - Work
+   * @apiParam {Boolean} [isAll] 是否对所有作品执行修改
+   * @apiParam {Number[]} [ids] id集合
+   * @apiUse BaseReq
+   * @apiUse Auth
+   * @apiUse BaseRes
+   */
+  @AdminRoute('post', '/personal/works/batchDelete')
+  async batchDelete () {
+    const { ctx, service } = this;
+
+    const { ids } = await ctx.validate<BatchWorkDeleteDto>(BatchWorkDeleteDto);
+
+    const result = await service.personal.work.batchDelete(ids);
+
+    if (!result) {
+      this.res({
+        code: 30001
+      });
+      return;
+    }
+
     this.res();
   }
 }

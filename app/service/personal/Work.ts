@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
-import { FindManyOptions, In } from 'typeorm';
-import { CreatePersonalWorkDto, UpdatePersonalWorkDto } from '../../dto/personal/work';
+import { FindConditions, FindManyOptions, In } from 'typeorm';
+import { BatchWorkMountDto, BatchWorkShowDto, CreatePersonalWorkDto, UpdatePersonalWorkDto } from '../../dto/personal/work';
 import PersonalWork from '../../entities/mysql/personal/PersonalWork';
 import BaseService, { IWhereCondition } from '../BaseService';
 
@@ -116,6 +116,74 @@ export default class PersonalWorkService extends BaseService {
     }
 
     await this.getRepo().personal.PersonalWork.delete(id);
+
+    return true;
+  }
+
+  async batchMount ({ baseId, newBaseId, isAll, ids = [] }: BatchWorkMountDto) {
+    const where: FindConditions<PersonalWork> = {};
+
+    if (baseId) {
+      const base = await this.getRepo().personal.PersonalBase.findOne({ id: baseId });
+      if (!base) {
+        this.ctx.throw('原挂载点不存在', 422);
+      }
+      where.base = base;
+    }
+
+    if (!isAll) {
+      where.id = In(ids);
+    }
+
+    const works = await this.getRepo().personal.PersonalWork.find({
+      relations: ['base'],
+      where
+    });
+
+    if (works.length === 0) {
+      return false;
+    }
+
+    const newBase = await this.getRepo().personal.PersonalBase.findOne({ id: newBaseId });
+
+    if (!newBase) {
+      this.ctx.throw('新挂载点不存在', 422);
+    }
+
+    await this.getRepo().personal.PersonalWork.save(works.map(work => {
+      work.base = newBase;
+      return work;
+    }));
+
+    return true;
+  }
+
+  async batchShow ({ isShow, isAll, ids = [] }: BatchWorkShowDto) {
+    const works = await this.getRepo().personal.PersonalWork.find({
+      ...(!isAll ? { where: { id: In(ids) } } : null)
+    });
+
+    if (!works) {
+      return false;
+    }
+
+    await this.getRepo().personal.PersonalWork.save(works.map(work => {
+      work.isShow = isShow;
+      return work;
+    }));
+
+    return true;
+  }
+
+  async batchDelete (ids: number[]) {
+    const works = await this.getRepo().personal.PersonalWork.find({
+      where: { id: In(ids) }
+    });
+    if (!works) {
+      return false;
+    }
+
+    await this.getRepo().personal.PersonalWork.remove(works);
 
     return true;
   }
