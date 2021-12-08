@@ -1,6 +1,6 @@
 import { Like } from 'typeorm';
 import { BaseToggleShowDto } from '../../../dto/common/common';
-import { CreatePersonalSkillDto, QueryPersonalSkillsDto, UpdatePersonalSkillDto } from '../../../dto/personal/skill';
+import { BatchSkillDeleteDto, BatchSkillMountDto, BatchSkillShowDto, CreatePersonalSkillDto, QueryPersonalSkillsDto, UpdatePersonalSkillDto } from '../../../dto/personal/skill';
 import { AdminRoute } from '../../../libs/decorators/RouterRegister';
 import { formatPersonalSkill } from '../../../libs/utils';
 import BaseController from '../../BaseController';
@@ -176,6 +176,106 @@ export default class PersonalSkillController extends BaseController {
       });
       return;
     }
+    this.res();
+  }
+
+  /**
+   * @api {post} /personal/skills/batchMount 批处理技能挂载点
+   * @apiGroup Personal - Skill
+   * @apiParam {Number} baseId 需要修改的挂载点id,为0时表示所有
+   * @apiParam {Number} newBaseId 新的挂载点id
+   * @apiParam {Boolean} [isAll] 是否对所有技能执行修改
+   * @apiParam {Number[]} [ids] id集合
+   * @apiUse BaseReq
+   * @apiUse Auth
+   * @apiUse BaseRes
+   */
+  @AdminRoute('post', '/personal/skills/batchMount')
+  async bacthMount () {
+    const { ctx, service } = this;
+
+    const dto = await ctx.validate<BatchSkillMountDto>(BatchSkillMountDto);
+
+    if (!dto.isAll && (!dto.ids)) {
+      this.res({
+        code: 422,
+        message: 'isAll 或 ids 字段必须存在其中之一'
+      }, 422);
+      return;
+    }
+
+    const result = await service.personal.skill.batchMount(dto);
+
+    if (!result) {
+      this.res({
+        code: 30001
+      });
+      return;
+    }
+
+    this.res();
+  }
+
+  /**
+   * @api {post} /personal/skills/batchShow 批处理技能显示状态
+   * @apiGroup Personal - Skill
+   * @apiParam {Number} isShow 是否显示
+   * @apiParam {Boolean} [isAll] 是否对所有技能执行修改
+   * @apiParam {Number[]} [ids] id集合
+   * @apiUse BaseReq
+   * @apiUse Auth
+   * @apiUse BaseRes
+   */
+  @AdminRoute('post', '/personal/skills/batchShow')
+  async batchShow () {
+    const { ctx, service } = this;
+
+    const dto = await ctx.validate<BatchSkillShowDto>(BatchSkillShowDto);
+
+    if (!dto.isAll && (!dto.ids)) {
+      this.res({
+        code: 422,
+        message: 'isAll 或 ids 字段必须存在其中之一'
+      }, 422);
+      return;
+    }
+
+    const result = await service.personal.skill.batchShow(dto);
+
+    if (!result) {
+      this.res({
+        code: 30001
+      });
+      return;
+    }
+
+    this.res();
+  }
+
+  /**
+   * @api {post} /personal/skills/batchDelete 批删除技能
+   * @apiGroup Personal - Skill
+   * @apiParam {Boolean} [isAll] 是否对所有技能执行修改
+   * @apiParam {Number[]} [ids] id集合
+   * @apiUse BaseReq
+   * @apiUse Auth
+   * @apiUse BaseRes
+   */
+  @AdminRoute('post', '/personal/skills/batchDelete')
+  async batchDelete () {
+    const { ctx, service } = this;
+
+    const { ids } = await ctx.validate<BatchSkillDeleteDto>(BatchSkillDeleteDto);
+
+    const result = await service.personal.skill.batchDelete(ids);
+
+    if (!result) {
+      this.res({
+        code: 30001
+      });
+      return;
+    }
+
     this.res();
   }
 }

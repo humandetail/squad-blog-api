@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
-import { FindManyOptions } from 'typeorm';
-import { CreatePersonalSkillDto, UpdatePersonalSkillDto } from '../../dto/personal/skill';
+import { FindConditions, FindManyOptions, In } from 'typeorm';
+import { BatchSkillMountDto, BatchSkillShowDto, CreatePersonalSkillDto, UpdatePersonalSkillDto } from '../../dto/personal/skill';
 import PersonalSkill from '../../entities/mysql/personal/PersonalSkill';
 import BaseService, { IWhereCondition } from '../BaseService';
 
@@ -91,6 +91,74 @@ export default class PersonalSkillService extends BaseService {
     }
 
     await this.getRepo().personal.PersonalSkill.delete(id);
+
+    return true;
+  }
+
+  async batchMount ({ baseId, newBaseId, isAll, ids = [] }: BatchSkillMountDto) {
+    const where: FindConditions<PersonalSkill> = {};
+
+    if (baseId) {
+      const base = await this.getRepo().personal.PersonalBase.findOne({ id: baseId });
+      if (!base) {
+        this.ctx.throw('原挂载点不存在', 422);
+      }
+      where.base = base;
+    }
+
+    if (!isAll) {
+      where.id = In(ids);
+    }
+
+    const skills = await this.getRepo().personal.PersonalSkill.find({
+      relations: ['base'],
+      where
+    });
+
+    if (skills.length === 0) {
+      return false;
+    }
+
+    const newBase = await this.getRepo().personal.PersonalBase.findOne({ id: newBaseId });
+
+    if (!newBase) {
+      this.ctx.throw('新挂载点不存在', 422);
+    }
+
+    await this.getRepo().personal.PersonalSkill.save(skills.map(skill => {
+      skill.base = newBase;
+      return skill;
+    }));
+
+    return true;
+  }
+
+  async batchShow ({ isShow, isAll, ids = [] }: BatchSkillShowDto) {
+    const skills = await this.getRepo().personal.PersonalSkill.find({
+      ...(!isAll ? { where: { id: In(ids) } } : null)
+    });
+
+    if (!skills) {
+      return false;
+    }
+
+    await this.getRepo().personal.PersonalSkill.save(skills.map(skill => {
+      skill.isShow = isShow;
+      return skill;
+    }));
+
+    return true;
+  }
+
+  async batchDelete (ids: number[]) {
+    const skills = await this.getRepo().personal.PersonalSkill.find({
+      where: { id: In(ids) }
+    });
+    if (!skills) {
+      return false;
+    }
+
+    await this.getRepo().personal.PersonalSkill.remove(skills);
 
     return true;
   }

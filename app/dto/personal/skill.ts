@@ -1,7 +1,13 @@
+import * as _ from 'lodash';
 import {
   Length,
   IsString,
   IsOptional,
+  IsBoolean,
+  IsArray,
+  ArrayMinSize,
+  Min,
+  Max,
   IsInt
 } from 'class-validator';
 import { Expose, Transform } from 'class-transformer';
@@ -36,4 +42,54 @@ export class QueryPersonalSkillsDto extends PageGetDto {
   @IsString()
   @Expose()
   keyword?: string;
+}
+
+class SkillBatchDto {
+  @IsOptional()
+  @IsBoolean()
+  @Expose()
+  isAll?: boolean;
+
+  @IsOptional()
+  @IsArray({ message: 'id集合必须是个 Array<number> 类型' })
+  @ArrayMinSize(1, { message: 'id集合不能为空' })
+  @IsInt({
+    each: true,
+    message: 'id集合必须是个 Array<number> 类型'
+  })
+  @Transform(v => _.isArray(v) && v.map(val => parseInt(val)), { toClassOnly: true })
+  @Expose()
+  ids?: number[];
+}
+
+export class BatchSkillMountDto extends SkillBatchDto {
+  @IsInt({ message: '挂载点必须是个数值类型' })
+  @Transform(v => v && parseInt(v), { toClassOnly: true })
+  @Expose()
+  baseId: number;
+
+  @IsInt({ message: '新挂载点必须是个数值类型' })
+  @Transform(v => v && parseInt(v), { toClassOnly: true })
+  @Expose()
+  newBaseId: number;
+}
+
+export class BatchSkillShowDto extends SkillBatchDto {
+  @IsInt({ message: '是否显示字段必须是0或者1' })
+  @Min(0, { message: '是否显示字段必须是0或者1' })
+  @Max(1, { message: '是否显示字段必须是0或者1' })
+  @Transform(v => v && parseInt(v), { toClassOnly: true })
+  @Expose()
+  isShow: number;
+}
+
+export class BatchSkillDeleteDto {
+  @IsArray({ message: 'id集合必须是个 Array<number> 类型' })
+  @ArrayMinSize(1, { message: 'id集合不能为空' })
+  @IsInt({
+    each: true,
+    message: 'id集合必须是个 Array<number> 类型'
+  })
+  @Expose()
+  ids: number[];
 }
