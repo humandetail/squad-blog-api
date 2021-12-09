@@ -1,6 +1,7 @@
-import { PrimaryColumn, Column, Entity, OneToMany } from 'typeorm';
+import { PrimaryColumn, Column, Entity, OneToMany, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../../BaseEntity';
 import PersonalBase from '../personal/PersonalBase';
+import Role from './Role';
 
 @Entity({ name: 'user' })
 export default class User extends BaseEntity {
@@ -47,4 +48,7 @@ export default class User extends BaseEntity {
 
   @OneToMany(() => PersonalBase, base => base.user)
   personalBases: PersonalBase[];
+
+  @ManyToOne(() => Role, role => role.users)
+  role: Role;
 }

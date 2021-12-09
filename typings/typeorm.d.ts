@@ -13,6 +13,8 @@ import MysqlResourceBlogroll from '../app/entities/mysql/resource/Blogroll'
 import MysqlResourcePicture from '../app/entities/mysql/resource/Picture'
 import MysqlResourcePictureCategory from '../app/entities/mysql/resource/PictureCategory'
 import MysqlResourcePostTemplate from '../app/entities/mysql/resource/PostTemplate'
+import MysqlSysMenu from '../app/entities/mysql/sys/Menu'
+import MysqlSysRole from '../app/entities/mysql/sys/Role'
 import MysqlSysSetting from '../app/entities/mysql/sys/Setting'
 import MysqlSysUser from '../app/entities/mysql/sys/User'
 import MongodbBaseEntity from '../app/entities/mongodb/BaseEntity'
@@ -40,7 +42,12 @@ declare module 'egg' {
         PictureCategory: typeof MysqlResourcePictureCategory
         PostTemplate: typeof MysqlResourcePostTemplate
       }
-      sys: { Setting: typeof MysqlSysSetting; User: typeof MysqlSysUser }
+      sys: {
+        Menu: typeof MysqlSysMenu
+        Role: typeof MysqlSysRole
+        Setting: typeof MysqlSysSetting
+        User: typeof MysqlSysUser
+      }
       mongodb: {
         BaseEntity: typeof MongodbBaseEntity
         article: {
@@ -71,6 +78,8 @@ declare module 'egg' {
         PostTemplate: Repository<MysqlResourcePostTemplate>
       }
       sys: {
+        Menu: Repository<MysqlSysMenu>
+        Role: Repository<MysqlSysRole>
         Setting: Repository<MysqlSysSetting>
         User: Repository<MysqlSysUser>
       }
