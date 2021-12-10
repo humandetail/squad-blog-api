@@ -20,7 +20,8 @@ export async function initUser (app: Application) {
       isLock: 0,
       isShow: 1,
       operator: 'admin',
-      lastLogin: now()
+      lastLogin: now(),
+      roleId: 1
     });
 
     if (!result) {

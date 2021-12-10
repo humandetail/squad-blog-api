@@ -37,6 +37,14 @@ export default class UserService extends BaseService {
     await this.ctx.ormManager.transaction(async manager => {
       const user = manager.create(this.getEntity().sys.User, userInfo);
 
+      if (userInfo.roleId) {
+        const role = await this.getRepo().sys.Role.findOne({ id: userInfo.roleId });
+        if (!role) {
+          this.ctx.throw('角色不存在', 422);
+        }
+        user.role = role;
+      }
+
       // 1. 添加用户
       await manager.save(user);
 
@@ -88,7 +96,16 @@ export default class UserService extends BaseService {
     }
 
     // 更新用户信息操作
-    const { isLock, isShow, sort, lastLogin } = userInfo as IUserInfo;
+    const { isLock, isShow, sort, lastLogin, roleId } = userInfo as IUserInfo;
+
+    if (roleId) {
+      const role = await this.getRepo().sys.Role.findOne({ id: roleId });
+      if (!role) {
+        this.ctx.throw('角色不存在', 422);
+      }
+      user.role = role;
+    }
+
     user.isLock = isLock ?? user.isLock;
     user.isShow = isShow ?? user.isShow;
     user.sort = sort ?? user.sort;

@@ -1,7 +1,6 @@
 import { Application } from 'egg';
 import { IBoot } from 'egg';
-import { initSetting } from './app/libs/initSetting';
-import { initUser } from './app/libs/initUser';
+import { initSetting, initUser, initRole } from './app/libs/init';
 
 class AppBootHook implements IBoot {
   private readonly app: Application;
@@ -37,6 +36,7 @@ class AppBootHook implements IBoot {
 
   async didReady() {
     // 应用已经启动完毕
+    await initRole(this.app);
     await initUser(this.app);
     await initSetting(this.app);
   }

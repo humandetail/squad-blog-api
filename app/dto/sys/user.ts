@@ -17,6 +17,12 @@ export class CreateUserDto {
   @Matches(passwordReg, { message: '密码必须包含英文字母、数字和特殊符号（!@#$%^&*_），长度为6-20' })
   @Expose()
   password: string;
+
+  @IsOptional()
+  @IsInt({ message: '角色必须是个 number 类型' })
+  @Transform(v => v && parseInt(v), { toClassOnly: true })
+  @Expose()
+  roleId?: number;
 }
 
 export class ChangePasswordDto {
@@ -37,6 +43,12 @@ export class UpdateUserDto extends BaseUpdateDto {
   @Transform(v => v && parseInt(v), { toClassOnly: true })
   @Expose()
   isLock?: number;
+
+  @IsOptional()
+  @IsInt({ message: '角色必须是个 number 类型' })
+  @Transform(v => v && parseInt(v), { toClassOnly: true })
+  @Expose()
+  roleId?: number;
 }
 
 export class QueryUsersDto extends PageGetDto {
