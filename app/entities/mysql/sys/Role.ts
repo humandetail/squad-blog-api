@@ -21,6 +21,13 @@ export default class Role extends BaseEntity {
   })
   remarks: string;
 
+  @Column({
+    type: 'boolean',
+    default: false,
+    comment: '是否为超级管理员'
+  })
+  isAdmin: boolean;
+
   @ManyToMany(() => Menu)
   @JoinTable()
   menus: Menu[];

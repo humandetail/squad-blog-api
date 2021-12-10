@@ -25,7 +25,7 @@ export default class AuthController extends BaseController {
     });
 
     // 校验用户名或密码
-    const user = await this.service.sys.user.findOne({ username: dto.username });
+    const user = await this.service.sys.user.findOne({ username: dto.username }, ['role']);
 
     if (!user || this.getHelper().passwordEncrypt(dto.password, user.salt) !== user.password) {
       this.res({
@@ -90,8 +90,8 @@ export default class AuthController extends BaseController {
   @AdminRoute('get', '/getUserInfo')
   async getUserInfo () {
     const { token } = this.ctx;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const userInfo = await this.service.sys.user.findOne({ id: token.id }, true);
+
+    const userInfo = await this.service.sys.user.findOne({ id: token.id }, ['personalBases']);
     if (!userInfo) {
       this.res({
         code: 30001
@@ -100,6 +100,50 @@ export default class AuthController extends BaseController {
     }
     this.res({
       data: formatUserInfo(userInfo)
+    });
+  }
+
+  /**
+   * @api {get} /getMenus 获取用户可访问菜单
+   * @apiGroup Auth
+   * @apiUse Auth
+   * @apiUse InfoRes
+   * @apiSuccess {Object[]} data
+   * @apiSuccess {Number} data.parentId 上级菜单id
+   * @apiSuccess {String} data.name 菜单/操作名称
+   * @apiSuccess {Number} data.type 类型：1=菜单，2=操作
+   * @apiSuccess {String} data.router 菜单路由，parentId 为0时，可以为空，表示目录菜单
+   * @apiSuccess {String} data.permission 操作权限代码
+   * @apiSuccess {String} data.path 组件路径，parentId 为0时，可以为空，表示目录菜单
+   * @apiSuccess {String} data.icon 菜单图标
+   * @apiSuccess {Number} data.isCache 是否缓存，1=是，0=否
+   */
+  @AdminRoute('get', '/getMenus')
+  async getMenus () {
+    const { ctx: { token }, service } = this;
+
+    const menus = await service.sys.menu.getMenus(token.roleId);
+
+    this.res({
+      data: menus.map(menu => this.formatDateField(menu))
+    });
+  }
+
+  /**
+   * @api {get} /getPermissions 获取用户可操作的权限
+   * @apiGroup Auth
+   * @apiUse Auth
+   * @apiUse InfoRes
+   * @apiSuccess {String[]} data 权限列表
+   */
+  @AdminRoute('get', '/getPermissions')
+  async getPermissions () {
+    const { ctx: { token }, service } = this;
+
+    const permissions = await service.sys.menu.getPermissions(token.roleId);
+
+    this.res({
+      data: permissions
     });
   }
 }

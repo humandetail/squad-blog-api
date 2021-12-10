@@ -13,6 +13,7 @@ export async function initRole (app: Application) {
       name: '超级管理员',
       remarks: '最高权限角色',
       isShow: 1,
+      isAdmin: true,
       sort: 999
     }, true);
 

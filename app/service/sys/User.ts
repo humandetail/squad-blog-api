@@ -117,15 +117,8 @@ export default class UserService extends BaseService {
     return true;
   }
 
-  async findOne (where: IWhereCondition<User>, showPersonalBase = false) {
-    const user = await this.getRepo().sys.User.findOne({ where });
-
-    if (user && showPersonalBase) {
-      const personalBase = await this.service.personal.base.findOne({ user, isDefault: 1, isShow: 1 }, ['avatar']);
-      if (personalBase) {
-        user.personalBases = [personalBase];
-      }
-    }
+  async findOne (where: IWhereCondition<User>, relations: string[] = []) {
+    const user = await this.getRepo().sys.User.findOne({ where, relations });
 
     return user;
   }

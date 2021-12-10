@@ -117,8 +117,8 @@ export default class BlogrollController extends BaseController {
   }
 
   /**
-   * @api {get} /personal/bases 获取友情链接列表
-   * @apiGroup Personal - Base
+   * @api {get} /blogrolls 获取友情链接列表
+   * @apiGroup Resource - Blogroll
    * @apiUse Auth
    * @apiUse InfoRes
    * @apiSuccess {Object} data

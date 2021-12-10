@@ -29,7 +29,7 @@ export default function adminLog (): any {
       });
     } catch (e) {
       // 日志记录失败
-      console.error(e);
+      ctx.logger.error(e);
     }
   };
 }

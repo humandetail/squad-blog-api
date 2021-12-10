@@ -3,7 +3,9 @@
 
 import { Context } from 'egg';
 
-const prefix = '/api/squad-admin';
+import { ADMIN_PREFIX } from '../libs/decorators/RouterRegister';
+
+const prefix = `/api${ADMIN_PREFIX}`;
 // 鉴权白名单
 const whiteLists = [
   `${prefix}/login`, // 登录
@@ -13,7 +15,6 @@ export default function adminAuthority (): any {
   return async function (ctx: Context, next: () => Promise<any>) {
     const { url } = ctx;
 
-    let code = 200;
     // 前缀未匹配 和 白名单直接放行
     if (!url.startsWith(prefix) || whiteLists.includes(url.split('?')[0])) {
       await next();
@@ -25,7 +26,8 @@ export default function adminAuthority (): any {
     try {
       ctx.token = ctx.helper.jwtVerify(token);
     } catch (e) {
-      code = 401;
+      ctx.status = 401;
+      return;
     }
 
     if (ctx.token) {
@@ -33,17 +35,48 @@ export default function adminAuthority (): any {
       const rToken = await ctx.service.common.auth.getTokenFromRedis(ctx.token.id);
 
       if (rToken !== token) {
-        code = 401;
+        ctx.status = 401;
+        return;
       }
     }
 
-    if (code !== 200) {
-      ctx.status = code;
-      ctx.body = {
-        code,
-        data: null,
-        message: '请先登录'
-      };
+    // 检验接口权限
+    const role = await ctx.service.sys.role.findOne({ id: ctx.token.roleId });
+    if (!role) {
+      ctx.status = 401;
+      return;
+    }
+
+    if (role.isAdmin) {
+      // 超管账号直接放行
+      await next();
+      return;
+    }
+    const permissions = await ctx.service.sys.menu.getPermissions(ctx.token.roleId);
+
+    const matchStr = `${ctx.method.toLowerCase()}|${url.replace(prefix + '/', '').replace(/\//g, ':')}`;
+
+    const hasPermission = permissions.some(permission => {
+      if (permission === matchStr) {
+        return true;
+      }
+      if (permission.includes('[id]')) {
+        // get|posts:[id] => /^get\|posts:([A-z0-9]{10})$/
+        // put|categories:[id]:show => /^put\|categories:(\d+):show$/
+        const reg = new RegExp('^' + permission.replace(/\|/g, '\\|').replace('[id]', permission.includes('posts')
+          ? '([A-z0-9]{10})'
+          : '(\\d+)') + '$'
+        );
+
+        if (reg.test(matchStr)) {
+          return true;
+        }
+      }
+      return false;
+    });
+
+    if (!hasPermission) {
+      ctx.status = 403;
       return;
     }
     await next();

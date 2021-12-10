@@ -20,6 +20,8 @@ import ExportResourcePicture from '../../../app/service/resource/Picture';
 import ExportResourcePictureCategory from '../../../app/service/resource/PictureCategory';
 import ExportResourcePostTemplate from '../../../app/service/resource/PostTemplate';
 import ExportSysLog from '../../../app/service/sys/Log';
+import ExportSysMenu from '../../../app/service/sys/Menu';
+import ExportSysRole from '../../../app/service/sys/Role';
 import ExportSysSetting from '../../../app/service/sys/Setting';
 import ExportSysUser from '../../../app/service/sys/User';
 
@@ -48,6 +50,8 @@ declare module 'egg' {
     }
     sys: {
       log: AutoInstanceType<typeof ExportSysLog>;
+      menu: AutoInstanceType<typeof ExportSysMenu>;
+      role: AutoInstanceType<typeof ExportSysRole>;
       setting: AutoInstanceType<typeof ExportSysSetting>;
       user: AutoInstanceType<typeof ExportSysUser>;
     }

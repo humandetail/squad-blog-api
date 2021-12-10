@@ -7,6 +7,7 @@ import PersonalBase from '../entities/mysql/personal/PersonalBase';
 import PersonalSkill from '../entities/mysql/personal/PersonalSkill';
 import PersonalWork from '../entities/mysql/personal/PersonalWork';
 import PostTemplate from '../entities/mysql/resource/PostTemplate';
+import Role from '../entities/mysql/sys/Role';
 import Setting from '../entities/mysql/sys/Setting';
 import User from '../entities/mysql/sys/User';
 import { IPostWithViewCount } from '../service/post/Post';
@@ -225,5 +226,13 @@ export function formatPost ({
     tags: tags ? tags.map(({ id, displayName }) => ({ id, displayName })) : [],
     templateId,
     templateName
+  });
+}
+
+// 格式化角色权限菜单信息
+export function formatRoleMenus ({ menus, ...role }: Role) {
+  return formatDateField({
+    ...role,
+    menus: menus.map(({ id, name, parentId }) => ({ id, name, parentId }))
   });
 }
