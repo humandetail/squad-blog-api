@@ -17,7 +17,7 @@ interface DateFileds {
   updatedTime: Date;
 }
 
-type IAdditionalUserInfo = Pick<PersonalBase, 'nickname'> & { avatarPic: string };
+type IAdditionalUserInfo = Pick<PersonalBase, 'nickname'> & { avatarPic: string, roleId: number | null, roleName: string };
 
 export function formatDate (date: Date, format = 'YYYY-MM-DD HH:mm:ss') {
   return moment(date).format(format);
@@ -38,24 +38,30 @@ export function formatDateField<T extends DateFileds> (input: T): Omit<T, 'creat
  */
 export const formatUserInfo = (userInfo: User) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { password, salt, personalBases, lastLogin, ...user } = userInfo;
+  const { password, salt, personalBases, role, lastLogin, ...user } = userInfo;
 
-  let additionalUser: IAdditionalUserInfo | null = null;
+  const additionalUser: IAdditionalUserInfo = {
+    nickname: '',
+    avatarPic: '',
+    roleId: null,
+    roleName: ''
+  };
   if (personalBases && personalBases[0]) {
     const {
       nickname,
       avatar
     } = personalBases[0];
-    let avatarPic = '';
+
+    additionalUser.nickname = nickname;
 
     if (avatar) {
-      avatarPic = avatar.qiniuDomain + avatar.qiniuKey;
+      additionalUser.avatarPic = avatar.qiniuDomain + avatar.qiniuKey;
     }
+  }
 
-    additionalUser = {
-      nickname,
-      avatarPic
-    };
+  if (role) {
+    additionalUser.roleId = role.id;
+    additionalUser.roleName = role.name;
   }
 
   return formatDateField({

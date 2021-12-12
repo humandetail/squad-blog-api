@@ -86,12 +86,16 @@ export default class AuthController extends BaseController {
    * @apiSuccess {String} data.username 用户名
    * @apiSuccess {Number} data.isLock 是否锁定
    * @apiSuccess {String} data.lastLogin 最后登录时间
+   * @apiSuccess {String} data.nickName 用户昵称
+   * @apiSuccess {String} data.avatarPic 用户头像url
+   * @apiSuccess {Number} data.roleId 用户角色id
+   * @apiSuccess {String} data.roleName 用户角色名称
    */
   @AdminRoute('get', '/getUserInfo')
   async getUserInfo () {
     const { token } = this.ctx;
 
-    const userInfo = await this.service.sys.user.findOne({ id: token.id }, ['personalBases']);
+    const userInfo = await this.service.sys.user.findOne({ id: token.id }, ['personalBases', 'role']);
     if (!userInfo) {
       this.res({
         code: 30001
