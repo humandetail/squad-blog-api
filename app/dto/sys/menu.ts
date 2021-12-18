@@ -5,10 +5,12 @@ import {
   Min,
   Max,
   MaxLength,
-  IsOptional
+  IsOptional,
+  Matches
 } from 'class-validator';
 import { Expose, Transform } from 'class-transformer';
 import { BaseCreateDto, PageGetDto } from '../common/common';
+import { permissionReg } from '../../libs/regexp';
 
 export class CreateMenuDto extends BaseCreateDto {
   @Length(1, 32, { message: '菜单名称不能超过32个字符' })
@@ -36,6 +38,7 @@ export class CreateMenuDto extends BaseCreateDto {
 
   @IsOptional()
   @MaxLength(255)
+  @Matches(permissionReg, { message: `权限代码格式不正确，${permissionReg}` })
   @Expose()
   permission?: string;
 
