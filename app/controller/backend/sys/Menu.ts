@@ -27,9 +27,9 @@ export default class MenuController extends BaseController {
       parentId,
       name,
       type,
-      router,
+      // router,
       permission,
-      path,
+      // path,
       icon,
       isCache,
       isShow,
@@ -50,14 +50,14 @@ export default class MenuController extends BaseController {
     };
 
     if (type === 1) {
-      if (parentId !== 0 && (!router || !path)) {
-        this.res({
-          message: '当类型为菜单时，页面路由和组件路径字段不能为空'
-        }, 422);
-        return;
-      }
-      data.router = parentId === 0 ? '' : router!;
-      data.path = parentId === 0 ? '' : path!;
+      // if (parentId !== 0 && (!router || !path)) {
+      //   this.res({
+      //     message: '当类型为菜单时，页面路由和组件路径字段不能为空'
+      //   }, 422);
+      //   return;
+      // }
+      // data.router = parentId === 0 ? '' : router!;
+      // data.path = parentId === 0 ? '' : path!;
     } else {
       if (!permission) {
         this.res({
@@ -205,6 +205,7 @@ export default class MenuController extends BaseController {
    * @apiSuccess {String} data.path 组件路径，parentId 为0时，可以为空，表示目录菜单
    * @apiSuccess {String} data.icon 菜单图标
    * @apiSuccess {Number} data.isCache 是否缓存，1=是，0=否
+   * @apiSuccess {Boolean} data.hasChildren 是否有子菜单
    */
   @AdminRoute('get', '/menus/parentId/:id')
   async getMenusByParentId () {
