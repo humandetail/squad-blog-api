@@ -55,13 +55,13 @@ export default class MenuService extends BaseService {
     return this.getRepo().sys.Menu.findOne({ where });
   }
 
-  async findByParentId (parentId: number): Promise<Array<Menu & { hasChildren: boolean }>> {
+  async findByParentId (options: FindManyOptions): Promise<[Array<Menu & { hasChildren: boolean }>, number]> {
     const MenuRepo = this.getRepo().sys.Menu;
 
-    const menus = await MenuRepo.find({ parentId });
+    const [menus, total] = await MenuRepo.findAndCount(options);
 
     if (isEmpty(menus)) {
-      return [];
+      return [[], 0];
     }
 
     const retData: Array<Menu & { hasChildren: boolean }> = [];
@@ -74,7 +74,7 @@ export default class MenuService extends BaseService {
       });
     }
 
-    return retData;
+    return [retData, total];
   }
 
   async hasChildren (parentId: number) {

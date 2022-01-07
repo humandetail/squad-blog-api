@@ -1,4 +1,5 @@
 import { Like, Not } from 'typeorm';
+import { PageGetDto } from '../../../dto/common/common';
 import { CreateMenuDto, QueryMenusDto, UpdateMenuDto } from '../../../dto/sys/menu';
 import { AdminRoute } from '../../../libs/decorators/RouterRegister';
 import BaseController from '../../BaseController';
@@ -197,24 +198,31 @@ export default class MenuController extends BaseController {
    * @apiUse Auth
    * @apiUse InfoRes
    * @apiSuccess {Object} data
-   * @apiSuccess {Number} data.parentId 上级菜单id
-   * @apiSuccess {String} data.name 菜单/操作名称
-   * @apiSuccess {Number} data.type 类型：1=菜单，2=操作
-   * @apiSuccess {String} data.router 菜单路由，parentId 为0时，可以为空，表示目录菜单
-   * @apiSuccess {String} data.permission 操作权限代码
-   * @apiSuccess {String} data.path 组件路径，parentId 为0时，可以为空，表示目录菜单
-   * @apiSuccess {String} data.icon 菜单图标
-   * @apiSuccess {Number} data.isCache 是否缓存，1=是，0=否
-   * @apiSuccess {Boolean} data.hasChildren 是否有子菜单
+   * @apiSuccess {Object[]} data.records
+   * @apiSuccess {Number} data.records.parentId 上级菜单id
+   * @apiSuccess {String} data.records.name 菜单/操作名称
+   * @apiSuccess {Number} data.records.type 类型：1=菜单，2=操作
+   * @apiSuccess {String} data.records.router 菜单路由，parentId 为0时，可以为空，表示目录菜单
+   * @apiSuccess {String} data.records.permission 操作权限代码
+   * @apiSuccess {String} data.records.path 组件路径，parentId 为0时，可以为空，表示目录菜单
+   * @apiSuccess {String} data.records.icon 菜单图标
+   * @apiSuccess {Number} data.records.isCache 是否缓存，1=是，0=否
+   * @apiSuccess {Boolean} data.records.hasChildren 是否有子菜单
    */
   @AdminRoute('get', '/menus/parentId/:id')
   async getMenusByParentId () {
     const { id } = this.getParams();
+    const dto = await this.ctx.validate<PageGetDto>(PageGetDto, this.getQuery());
 
-    const menus = await this.service.sys.menu.findByParentId(id);
+    const [menus, total] = await this.service.sys.menu.findByParentId(this.formatFindManyOptions(dto, { parentId: id }));
 
     this.res({
-      data: menus
+      data: this.pageWrapper(
+        menus.map(v => this.formatDateField(v)),
+        dto.current,
+        dto.pageSize,
+        total
+      )
     });
   }
 
