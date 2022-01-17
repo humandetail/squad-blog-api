@@ -13,15 +13,67 @@ class AppBootHook implements IBoot {
     // 此时 config 文件已经被读取并合并，但是还并未生效
     // 这是应用层修改配置的最后时机
     // 注意：此函数只支持同步调用
-    const npmConfigArgv = JSON.parse(process.env.npm_config_argv || '{}');
-    const remain = (npmConfigArgv?.remain || []).reduce((prev, item) => {
-      const [key, value] = item.split('=');
-      prev[key] = value;
+    // const npmConfigArgv = JSON.parse(process.env.npm_config_argv || '{}');
+    const npmConfigArgv = JSON.parse(process.argv[2] || '{}');
+    // const remain = (npmConfigArgv?.remain || []).reduce((prev, item) => {
+    //   const [key, value] = item.split('=');
+    //   prev[key] = value;
 
-      return prev;
-    }, {});
-    this.app.config.qiniu.accessKey = remain?.qiniuAK || '';
-    this.app.config.qiniu.secretKey = remain?.qiniuSK || '';
+    //   return prev;
+    // }, {});
+    console.log(npmConfigArgv);
+    const [accessKey, secretKey, zone, bucket, ossDomain] = (npmConfigArgv?.qiniu || '').split('}}');
+    const [mysqlUsername, mysqlPassword, mysqlDatabase] = (npmConfigArgv?.mysql || '').split('}}');
+    const [mongodbUsername, mongodbPassword, mongodbDatabase] = (npmConfigArgv?.mongodb || '').spit('}}');
+    const [redisPassword, redisDb] = (npmConfigArgv?.redis || '').split('}}');
+
+    this.app.config.qiniu = {
+      accessKey,
+      secretKey,
+
+      // 机房	Zone对象
+      // 华东	qiniu.zone.Zone_z0
+      // 华北	qiniu.zone.Zone_z1
+      // 华南	qiniu.zone.Zone_z2
+      // 北美	qiniu.zone.Zone_na0
+      zone,
+      bucket,
+      ossDomain
+    };
+
+    this.app.config.typeorm = {
+      clients: [
+        {
+          name: 'default',
+          type: 'mysql',
+          host: 'localhost',
+          port: 3306,
+          username: mysqlUsername,
+          password: mysqlPassword,
+          database: mysqlDatabase,
+          synchronize: true
+        },
+        {
+          name: 'mongodb',
+          type: 'mongodb',
+          host: 'localhost',
+          port: 27017,
+          username: mongodbUsername,
+          password: mongodbPassword,
+          database: mongodbDatabase,
+          synchronize: true,
+        }
+      ]
+    };
+
+    this.app.config.redis = {
+      client: {
+        port: 6379,
+        host: 'localhost',
+        password: redisPassword ?? '',
+        db: redisDb,
+      },
+    };
   }
 
   async didLoad() {

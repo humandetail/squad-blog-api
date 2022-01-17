@@ -8,7 +8,8 @@
 
 ```bash
 $ npm i
-$ npm run dev -- qiniuAK=xxx qiniuSK=xxx
+# npm run dev -- --qiniu=[AK]}}[SK]}}[zone]}}[bucket]}}[ossDomain] --mysql=[username]}}[password]}}[database] --mongodb=[database] --redis=[password]}}[db]
+$ npm run dev -- --qiniu=akxxxxxx}}skxxxxx}}Zone_z2}}squad-dev}}http://r3eyoxri0.hn-bkt.clouddn.com/ --mysql=root}}root}}squad-blog --mongodb=squad-blog --redis=}}0
 $ open http://localhost:7001/
 ```
 

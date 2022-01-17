@@ -4,9 +4,9 @@
 import 'egg';
 import ExportBaseController from '../../../app/controller/BaseController';
 import ExportBackendCommonAuth from '../../../app/controller/backend/common/Auth';
-import ExportBackendPersonalBase from '../../../app/controller/backend/personal/Base';
 import ExportBackendPersonalSKill from '../../../app/controller/backend/personal/SKill';
 import ExportBackendPersonalWork from '../../../app/controller/backend/personal/Work';
+import ExportBackendPersonalBase from '../../../app/controller/backend/personal/base';
 import ExportBackendPostCategory from '../../../app/controller/backend/post/Category';
 import ExportBackendPostPost from '../../../app/controller/backend/post/Post';
 import ExportBackendPostTag from '../../../app/controller/backend/post/Tag';
@@ -27,9 +27,9 @@ declare module 'egg' {
         auth: ExportBackendCommonAuth;
       }
       personal: {
-        base: ExportBackendPersonalBase;
         sKill: ExportBackendPersonalSKill;
         work: ExportBackendPersonalWork;
+        base: ExportBackendPersonalBase;
       }
       post: {
         category: ExportBackendPostCategory;
