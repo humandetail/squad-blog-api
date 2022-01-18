@@ -2,6 +2,7 @@ import { Application } from 'egg';
 
 export const initRunParams = (app: Application) => {
   const npmConfigArgv = JSON.parse(process.argv[2] || '{}');
+  console.log(npmConfigArgv);
   const [accessKey, secretKey, zone, bucket, ossDomain] = (npmConfigArgv?.qiniu || '').split('}}');
   const [mysqlUsername, mysqlPassword, mysqlDatabase] = (npmConfigArgv?.mysql || '').split('}}');
   const [mongodbUsername, mongodbPassword, mongodbDatabase] = (npmConfigArgv?.mongodb || '').spit('}}');
