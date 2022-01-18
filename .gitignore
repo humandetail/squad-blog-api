@@ -21,3 +21,4 @@ config/**/*.map
 
 ormlogs.log
 qiniu.config
+account.config.json

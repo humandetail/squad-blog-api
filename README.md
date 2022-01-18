@@ -4,13 +4,58 @@
 
 ## QuickStart
 
+### Account.config.json
+
+`config/account.config.json`
+
+```json
+{
+  "typeorm": {
+    "clients": [
+      {
+        "name": "default",
+        "type": "mysql",
+        "host": "localhost",
+        "port": 3306,
+        "username": "root",
+        "password": "root",
+        "database": "squad-blog",
+        "synchronize": true,
+        "logger": "file",
+        "logging": true
+      },
+      {
+        "name": "mongodb",
+        "type": "mongodb",
+        "host": "localhost",
+        "port": 27017,
+        "database": "squad-blog"
+      }
+    ]
+  },
+  "redis": {
+    "client": {
+      "port": 6379,
+      "host": "localhost",
+      "password": "",
+      "db": 0
+    }
+  },
+  "qiniu": {
+    "accessKey": "YOUR_QINIU_ACCESS_KEY",
+    "secretKey": "YOUR_QINIU_SECRET_KEY",
+    "zone": "Zone_z2",
+    "bucket": "squad-dev",
+    "ossDomain": "http://r3eyoxri0.hn-bkt.clouddn.com/"
+  }
+}
+```
+
 ### Development
 
 ```bash
 $ npm i
-# npm run dev -- --qiniu=[AK]}}[SK]}}[zone]}}[bucket]}}[ossDomain] --mysql=[username]}}[password]}}[database] --mongodb=[database] --redis=[password]}}[db]
-$ npm run dev -- --qiniu=akxxxxxx}}skxxxxx}}Zone_z2}}squad-dev}}http://r3eyoxri0.hn-bkt.clouddn.com/ --mysql=root}}root}}squad-blog --mongodb=squad-blog --redis=}}0
-$ open http://localhost:7001/
+$ npm run dev
 ```
 
 Don't tsc compile at development mode, if you had run `tsc` then you need to `npm run clean` before `npm run dev`.

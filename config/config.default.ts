@@ -1,4 +1,14 @@
 import { EggAppConfig, EggAppInfo, PowerPartial } from 'egg';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
+
+const str = JSON.parse(readFileSync(resolve(__dirname, './account.config.json'), 'utf8') || '{}');
+console.log(JSON.stringify(str));
+const {
+  typeorm,
+  redis,
+  qiniu
+} = str;
 
 export default (appInfo: EggAppInfo) => {
   const config = {} as PowerPartial<EggAppConfig>;
@@ -72,55 +82,14 @@ export default (appInfo: EggAppInfo) => {
   };
 
   // typeorm 配置
-  config.typeorm = {
-    clients: [
-      {
-        name: 'default',
-        type: 'mysql',
-        host: 'localhost',
-        port: 3306,
-        // username: 'root',
-        // password: 'root',
-        // database: 'squad-blog',
-        synchronize: true,
-        logger: 'file',
-        logging: true
-      },
-      {
-        name: 'mongodb',
-        type: 'mongodb',
-        host: 'localhost',
-        port: 27017,
-        // database: 'squad-blog'
-      }
-    ],
-  };
+  config.typeorm = typeorm;
 
   // redis 配置
-  config.redis = {
-    client: {
-      port: 6379,
-      host: 'localhost',
-      // password: '',
-      // db: 0,
-    },
-  };
+  config.redis = redis;
 
   // 七牛配置
   // @see https://developer.qiniu.com/kodo/sdk/nodejs
-  config.qiniu = {
-    // accessKey: '',
-    // secretKey: '',
-
-    // // 机房	Zone对象
-    // // 华东	qiniu.zone.Zone_z0
-    // // 华北	qiniu.zone.Zone_z1
-    // // 华南	qiniu.zone.Zone_z2
-    // // 北美	qiniu.zone.Zone_na0
-    // zone: 'Zone_z2',
-    // bucket: 'squad-dev',
-    // ossDomain: 'http://r3eyoxri0.hn-bkt.clouddn.com/'
-  };
+  config.qiniu = qiniu;
 
   // add your special config in here
   const bizConfig = {
