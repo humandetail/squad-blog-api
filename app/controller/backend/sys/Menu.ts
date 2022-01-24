@@ -28,9 +28,9 @@ export default class MenuController extends BaseController {
       parentId,
       name,
       type,
-      // router,
+      router,
       permission,
-      // path,
+      path,
       icon,
       isCache,
       isShow,
@@ -41,9 +41,9 @@ export default class MenuController extends BaseController {
       parentId,
       name,
       type,
-      router: '',
+      router: router || '',
       permission: '',
-      path: '',
+      path: path || '',
       icon: icon || '',
       isCache: isCache ?? 1, // 默认为 keepAlive
       isShow: isShow ?? 1, // 默认为 显示菜单
@@ -107,12 +107,12 @@ export default class MenuController extends BaseController {
     const dto = await ctx.validate<UpdateMenuDto>(UpdateMenuDto);
 
     if (dto.type === 1) {
-      if (dto.parentId !== 0 && (!dto.router || !dto.path)) {
-        this.res({
-          message: '当类型为菜单时，页面路由和组件路径字段不能为空'
-        }, 422);
-        return;
-      }
+      // if (dto.parentId !== 0 && (!dto.router || !dto.path)) {
+      //   this.res({
+      //     message: '当类型为菜单时，页面路由和组件路径字段不能为空'
+      //   }, 422);
+      //   return;
+      // }
     } else {
       if (!dto.permission) {
         this.res({

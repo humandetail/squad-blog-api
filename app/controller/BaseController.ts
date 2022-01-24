@@ -162,7 +162,7 @@ export default abstract class BaseController extends Controller {
     const { ctx } = this;
     ctx.set('Content-Type', 'application/json');
 
-    const code = options?.code ?? 200;
+    const code = options?.code ?? (status === 422 ? 422 : 200);
     ctx.status = status;
     ctx.body = {
       code,
