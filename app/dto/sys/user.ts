@@ -35,7 +35,7 @@ export class ChangePasswordDto {
   newPassword: string;
 }
 
-export class UpdateUserDto extends BaseUpdateDto {
+export class LockUserDto extends BaseUpdateDto {
   @IsOptional()
   @IsInt({ message: '是否锁定字段必须是0或者1' })
   @Min(0, { message: '是否锁定字段必须是0或者1' })

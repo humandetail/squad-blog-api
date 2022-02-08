@@ -3,7 +3,6 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
 const str = JSON.parse(readFileSync(resolve(__dirname, './account.config.json'), 'utf8') || '{}');
-console.log(JSON.stringify(str));
 const {
   typeorm,
   redis,

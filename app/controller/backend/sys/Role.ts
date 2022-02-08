@@ -124,7 +124,7 @@ export default class RoleController extends BaseController {
    * @api {get} /roles 获取角色列表
    * @apiGroup System - Role
    * @apiUse Auth
-   * @apiUse InfoRes
+   * @apiUse PageRes
    * @apiSuccess {Object} data
    * @apiSuccess {Object[]} data.records
    * @apiSuccess {String} data.records.name 角色名称
@@ -139,7 +139,7 @@ export default class RoleController extends BaseController {
 
     const options = this.formatFindManyOptions(
       otherOptions,
-      keyword ? { name: Like(`%${keyword}%`) } : null
+      keyword ? { name: Like(`%${keyword}%`) } : null,
     );
 
     const [ roles, total ] = await this.service.sys.role.find(options);

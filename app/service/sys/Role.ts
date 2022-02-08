@@ -71,7 +71,10 @@ export default class RoleService extends BaseService {
   }
 
   async find (options: FindManyOptions) {
-    return this.getRepo().sys.Role.findAndCount(options);
+    return this.getRepo().sys.Role.findAndCount({
+      ...options,
+      relations: ['menus']
+    } as any);
   }
 
   async findOne (where: IWhereCondition<Role>, relations: string[] = []) {

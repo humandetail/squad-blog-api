@@ -19,13 +19,13 @@ export default class AuthService extends BaseService {
         username: user.username,
         isLock: user.isLock,
         isShow: user.isShow,
-        roleId: user.role.id,
+        roleId: user.role?.id,
         lastLogin: user.lastLogin
       },
       { expiresIn: '24h' }
     );
 
-    const permissions = await this.service.sys.menu.getPermissions(user.role.id);
+    const permissions = await this.service.sys.menu.getPermissions(user.role?.id);
 
     // 存储 token 信息到 redis
     await this.getRedis().set(`${RedisTokenKey}${id}`, token);

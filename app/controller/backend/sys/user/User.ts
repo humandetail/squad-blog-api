@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import { Like } from 'typeorm';
-import { ChangePasswordDto, CreateUserDto, QueryUsersDto, UpdateUserDto } from '../../../../dto/sys/user';
+import { ChangePasswordDto, CreateUserDto, QueryUsersDto, LockUserDto } from '../../../../dto/sys/user';
 import { AdminRoute } from '../../../../libs/decorators/RouterRegister';
 import { formatUserInfo } from '../../../../libs/utils';
 import BaseController from '../../../BaseController';
@@ -84,14 +84,13 @@ export default class UserController extends BaseController {
   }
 
   /**
-   * @api {put} /users/:id/password 更新用户信息
+   * @api {put} /users/:id/lock 锁定/解锁用户
    * @apiGroup System - User
    * @apiParam {String} isLock 是否锁定用户
-   * @apiUse BaseReq
    * @apiUse Auth
    * @apiUse BaseRes
    */
-  @AdminRoute('put', '/users/:id')
+  @AdminRoute('put', '/users/:id/lock')
   async update () {
     const { ctx } = this;
 
@@ -105,7 +104,7 @@ export default class UserController extends BaseController {
       return;
     }
 
-    const dto = await ctx.validate<UpdateUserDto>(UpdateUserDto);
+    const dto = await ctx.validate<LockUserDto>(LockUserDto);
 
     const result = await this.service.sys.user.update(id, dto);
 
