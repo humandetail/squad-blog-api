@@ -1,5 +1,5 @@
 import { Like, Not } from 'typeorm';
-import { PageGetDto } from '../../../dto/common/common';
+import { BaseToggleShowDto, PageGetDto } from '../../../dto/common/common';
 import { CreateMenuDto, QueryMenusDto, UpdateMenuDto } from '../../../dto/sys/menu';
 import { AdminRoute } from '../../../libs/decorators/RouterRegister';
 import BaseController from '../../BaseController';
@@ -82,6 +82,29 @@ export default class MenuController extends BaseController {
     this.res();
   }
 
+  /**
+   * @api {put} /menus/:id/show 更改菜单的显示状态
+   * @apiGroup System - Menu
+   * @apiParam {Number} isShow 1=显示；0=不显示
+   * @apiUse Auth
+   * @apiUse BaseRes
+   */
+  @AdminRoute('put', '/menus/:id/show')
+  async edit () {
+    const { ctx, service } = this;
+    const { id } = this.getParams();
+    const dto = await ctx.validate<BaseToggleShowDto>(BaseToggleShowDto);
+
+    const result = await service.sys.menu.update(id, dto);
+
+    if (!result) {
+      this.res({
+        code: 30001,
+      });
+      return;
+    }
+    this.res();
+  }
 
   /**
    * @api {put} /menus/:id 修改菜单

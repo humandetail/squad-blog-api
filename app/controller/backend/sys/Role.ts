@@ -1,7 +1,7 @@
 import { Like, Not } from 'typeorm';
+import { BaseToggleShowDto } from '../../../dto/common/common';
 import { CreateRoleDto, QueryRolesDto, RoleMenusDto, UpdateRoleDto } from '../../../dto/sys/role';
 import { AdminRoute } from '../../../libs/decorators/RouterRegister';
-import { formatRoleMenus } from '../../../libs/utils';
 import BaseController from '../../BaseController';
 
 export default class RoleController extends BaseController {
@@ -31,6 +31,30 @@ export default class RoleController extends BaseController {
 
     await service.sys.role.create(dto);
 
+    this.res();
+  }
+
+  /**
+   * @api {put} /roles/:id/show 更改角色的显示状态
+   * @apiGroup System - Role
+   * @apiParam {Number} isShow 1=显示；0=不显示
+   * @apiUse Auth
+   * @apiUse BaseRes
+   */
+  @AdminRoute('put', '/roles/:id/show')
+  async edit () {
+    const { ctx, service } = this;
+    const { id } = this.getParams();
+    const dto = await ctx.validate<BaseToggleShowDto>(BaseToggleShowDto);
+
+    const result = await service.sys.role.update(id, dto);
+
+    if (!result) {
+      this.res({
+        code: 30001,
+      });
+      return;
+    }
     this.res();
   }
 
@@ -100,24 +124,6 @@ export default class RoleController extends BaseController {
     }
 
     this.res();
-  }
-
-  @AdminRoute('get', '/roles/:id/authorizations')
-  async getAuthorizations () {
-    const { id } = this.getParams();
-
-    const role = await this.service.sys.role.findOne({ id }, ['menus']);
-
-    if (!role) {
-      this.res({
-        code: 30001
-      });
-      return;
-    }
-
-    this.res({
-      data: formatRoleMenus(role)
-    });
   }
 
   /**
