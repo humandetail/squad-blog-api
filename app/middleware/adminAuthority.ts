@@ -10,10 +10,16 @@ const prefix = `/api${ADMIN_PREFIX}`;
 const whiteLists = [
   `${prefix}/login`, // 登录
 ];
+// 拥有 Token 可以访问的白名单
+const whiteListsWithToken = [
+  `get|${prefix}/getUserInfo`, // 获取用户信息
+  `get|${prefix}/menus`, // 获取菜单
+  `get|${prefix}/logout` // 退出登录
+];
 
 export default function adminAuthority (): any {
   return async function (ctx: Context, next: () => Promise<any>) {
-    const { url } = ctx;
+    const { url, method } = ctx;
 
     // 前缀未匹配 和 白名单直接放行
     if (!url.startsWith(prefix) || whiteLists.includes(url.split('?')[0])) {
@@ -44,6 +50,12 @@ export default function adminAuthority (): any {
     const role = await ctx.service.sys.role.findOne({ id: ctx.token.roleId });
     if (!role) {
       ctx.status = 401;
+      return;
+    }
+
+    // 拥有 Token 可以访问的白名单放行
+    if (whiteListsWithToken.includes(method.toLowerCase() + '|' + url.split('?')[0])) {
+      await next();
       return;
     }
 
