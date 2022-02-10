@@ -124,8 +124,11 @@ export default class UserService extends BaseService {
   }
 
   // 分页查询
-  async getUsers (options: FindManyOptions) {
-    return this.getRepo().sys.User.findAndCount(options);
+  async getUsers (options: FindManyOptions, relations: string[] = []) {
+    return this.getRepo().sys.User.findAndCount({
+      ...options,
+      relations
+    } as FindManyOptions);
   }
 
   // 删除用户

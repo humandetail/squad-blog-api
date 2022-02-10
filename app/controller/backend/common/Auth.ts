@@ -129,7 +129,7 @@ export default class AuthController extends BaseController {
     const menus = await service.sys.menu.getMenus(token.roleId);
 
     this.res({
-      data: menus.map(menu => this.formatDateField(menu))
+      data: this.pageWrapper(menus.map(menu => this.formatDateField(menu)))
     });
   }
 

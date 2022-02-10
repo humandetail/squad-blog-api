@@ -84,13 +84,14 @@ export default class UserController extends BaseController {
   }
 
   /**
-   * @api {put} /users/:id/lock 锁定/解锁用户
+   * @api {put} /users/:id/manage 用户管理，分配角色、锁定、解锁
    * @apiGroup System - User
    * @apiParam {String} isLock 是否锁定用户
+   * @apiParam {Number} roleId 角色 id
    * @apiUse Auth
    * @apiUse BaseRes
    */
-  @AdminRoute('put', '/users/:id/lock')
+  @AdminRoute('put', '/users/:id/manage')
   async update () {
     const { ctx } = this;
 
@@ -167,7 +168,7 @@ export default class UserController extends BaseController {
       username ? { username: Like(`%${username}%`) } : null
     );
 
-    const [ users, total ] = await this.service.sys.user.getUsers(options);
+    const [ users, total ] = await this.service.sys.user.getUsers(options, ['role']);
 
     this.res({
       data: this.pageWrapper(users.map(v => formatUserInfo(v)), dto.current, dto.pageSize, total)

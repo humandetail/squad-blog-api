@@ -12,14 +12,14 @@ const whiteLists = [
 ];
 // 拥有 Token 可以访问的白名单
 const whiteListsWithToken = [
-  `get|${prefix}/getUserInfo`, // 获取用户信息
-  `get|${prefix}/menus`, // 获取菜单
-  `get|${prefix}/logout` // 退出登录
+  `${prefix}/getUserInfo`, // 获取用户信息
+  `${prefix}/getMenus`, // 获取菜单
+  `${prefix}/logout` // 退出登录
 ];
 
 export default function adminAuthority (): any {
   return async function (ctx: Context, next: () => Promise<any>) {
-    const { url, method } = ctx;
+    const { url } = ctx;
 
     // 前缀未匹配 和 白名单直接放行
     if (!url.startsWith(prefix) || whiteLists.includes(url.split('?')[0])) {
@@ -54,7 +54,7 @@ export default function adminAuthority (): any {
     }
 
     // 拥有 Token 可以访问的白名单放行
-    if (whiteListsWithToken.includes(method.toLowerCase() + '|' + url.split('?')[0])) {
+    if (whiteListsWithToken.includes(url.split('?')[0])) {
       await next();
       return;
     }
@@ -66,7 +66,7 @@ export default function adminAuthority (): any {
     }
     const permissions = await ctx.service.sys.menu.getPermissions(ctx.token.roleId);
 
-    const matchStr = `${ctx.method.toLowerCase()}|${url.replace(prefix + '/', '').replace(/\//g, ':')}`;
+    const matchStr = `${ctx.method.toLowerCase()}|${url.split('?')[0].replace(prefix + '/', '').replace(/\//g, ':')}`;
 
     const hasPermission = permissions.some(permission => {
       if (permission === matchStr) {
