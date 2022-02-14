@@ -57,7 +57,7 @@ export default class PictureController extends BaseController {
       unlink(file.filepath, () => { /**/ });
 
       this.res();
-    } catch (e) {
+    } catch (err) {
       this.res({
         code: 20002
       });
