@@ -1,5 +1,6 @@
 import { unlink } from 'fs';
 import { FindCondition, Like } from 'typeorm';
+import { BaseToggleShowDto } from '../../../../dto/common/common';
 import { CreatePictureDto, QueryPictureDto, UpdatePictureDto } from '../../../../dto/resource/picture/picture';
 import Picture from '../../../../entities/mysql/resource/Picture';
 import { AdminRoute } from '../../../../libs/decorators/RouterRegister';
@@ -132,6 +133,30 @@ export default class PictureController extends BaseController {
       }
       this.res({
         code: 30003
+      });
+      return;
+    }
+    this.res();
+  }
+
+  /**
+   * @api {put} /pictures/:id/show 更改图片显示状态
+   * @apiGroup Resource - Picture
+   * @apiParam {Number} isShow 1=显示；0=不显示
+   * @apiUse Auth
+   * @apiUse BaseRes
+   */
+  @AdminRoute('put', '/pictures/:id/show')
+  async edit () {
+    const { ctx, service } = this;
+    const { id } = this.getParams();
+    const dto = await ctx.validate<BaseToggleShowDto>(BaseToggleShowDto);
+
+    const result = await service.resource.picture.editIsShow(id, dto.isShow);
+
+    if (!result) {
+      this.res({
+        code: 30001,
       });
       return;
     }

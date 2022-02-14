@@ -49,6 +49,18 @@ export default class PictureService extends BaseService {
     return result;
   }
 
+  async editIsShow (id: number, isShow: number) {
+    const picture = await this.getRepo().resource.Picture.findOne(id);
+    if (!picture) {
+      return false;
+    }
+    picture.isShow = isShow;
+
+    const result = await this.getRepo().resource.Picture.save(picture);
+
+    return result;
+  }
+
   async findOne (where: IWhereOPtion, relations?: string[]) {
     return this.getRepo().resource.Picture.findOne({ where, relations });
   }
