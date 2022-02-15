@@ -7,8 +7,8 @@ import { Expose } from 'class-transformer';
 import { BaseCreateDto, PageGetDto } from '../common/common';
 
 export class CreateBlogrollDto extends BaseCreateDto {
-  @Length(2, 32, { message: '昵称长度为2-32个字符' })
-  @IsString({ message: '昵称长度为2-32个字符' })
+  @Length(2, 32, { message: '友链名称长度为2-32个字符' })
+  @IsString({ message: '友链名称长度为2-32个字符' })
   @Expose()
   name: string;
 
