@@ -31,7 +31,7 @@ export class CreatePostDto extends BaseCreateDto {
   @Expose()
   summary: string;
 
-  @Length(1, 65535, { message: '内容不能为空，且不能超时65535个字符' })
+  @Length(1, 65535, { message: '内容不能为空，且不能超过65535个字符' })
   @Expose()
   content: string;
 
@@ -70,17 +70,17 @@ export class CreatePostDto extends BaseCreateDto {
   tags: number[];
 
   @IsOptional()
-  @MaxLength(255, { message: 'seo标题不能操作255个字符' })
+  @MaxLength(255, { message: 'seo标题不能超过255个字符' })
   @Expose()
   seoTitle: string;
 
   @IsOptional()
-  @MaxLength(255, { message: 'seo关键字不能操作255个字符' })
+  @MaxLength(255, { message: 'seo关键字不能超过255个字符' })
   @Expose()
   seoKeywords: string;
 
   @IsOptional()
-  @MaxLength(500, { message: 'seo说明不能操作500个字符' })
+  @MaxLength(500, { message: 'seo说明不能超过500个字符' })
   @Expose()
   seoDescription: string;
 
