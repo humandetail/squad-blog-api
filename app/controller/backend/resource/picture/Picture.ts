@@ -52,12 +52,16 @@ export default class PictureController extends BaseController {
       };
       picture.category = category;
 
-      await service.resource.picture.create(picture);
+      const uploadedPicture = await service.resource.picture.create(picture);
 
       // 删除临时文件
       unlink(file.filepath, () => { /**/ });
 
-      this.res();
+      this.res({
+        code: 200,
+        data: uploadedPicture,
+        message: 'success'
+      });
     } catch (err) {
       this.res({
         code: 20002

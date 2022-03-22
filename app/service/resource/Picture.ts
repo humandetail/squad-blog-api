@@ -18,7 +18,7 @@ export default class PictureService extends BaseService {
       operator: this.ctx.token.username
     });
 
-    await Picture.save(data);
+    return await Picture.save(data);
   }
 
   async update (id: number, data: UpdatePictureDto & { qiniuKey: string; }) {
