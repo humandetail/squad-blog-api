@@ -96,6 +96,7 @@ export default class MenuService extends BaseService {
 
     const builder = this.getRepo().sys.Menu.createQueryBuilder('menu')
       .leftJoinAndSelect('role_menus_menu', 'r', 'r.menuId = menu.id')
+      .orderBy('menu.sort', 'DESC')
       .where('menu.type = 1');
 
     if (!role.isAdmin) {
