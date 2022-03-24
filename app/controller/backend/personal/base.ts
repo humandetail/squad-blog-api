@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import { Like } from 'typeorm';
-import { CreatePersonalBaseDto, EditPersonalBaseDto, QueryPersonalBasesDto, UpdatePersonalBaseDto } from '../../../dto/personal/base';
+import { CreatePersonalBaseDto, EditPersonalBaseIsDefaultDto, EditPersonalBaseIsShowDto, QueryPersonalBasesDto, UpdatePersonalBaseDto } from '../../../dto/personal/base';
 import { AdminRoute } from '../../../libs/decorators/RouterRegister';
 import { formatPersonalBase } from '../../../libs/utils';
 import BaseController from '../../BaseController';
@@ -76,6 +76,29 @@ export default class PersonalBaseController extends BaseController {
   }
 
   /**
+   * @api {put} /personal/bases/:id/show 更改个人基本信息是否显示
+   * @apiGroup Personal - Base
+   * @apiParam {Number} isShow 是否显示
+   * @apiUse Auth
+   * @apiUse BaseRes
+   */
+  @AdminRoute('put', '/personal/bases/:id/show')
+  async edit () {
+    const { id } = this.getParams();
+
+    const dto = await this.ctx.validate<EditPersonalBaseIsShowDto>(EditPersonalBaseIsShowDto);
+
+    const result = await this.service.personal.base.update(id, dto);
+    if (!result) {
+      this.res({
+        code: 30001
+      });
+    } else {
+      this.res();
+    }
+  }
+
+  /**
    * @api {put} /personal/bases/:id/default 更改默认个人基本信息
    * @apiGroup Personal - Base
    * @apiParam {Number} isDefault 是否为默认信息
@@ -83,10 +106,10 @@ export default class PersonalBaseController extends BaseController {
    * @apiUse BaseRes
    */
   @AdminRoute('put', '/personal/bases/:id/default')
-  async edit () {
+  async editDefault () {
     const { id } = this.getParams();
 
-    const dto = await this.ctx.validate<EditPersonalBaseDto>(EditPersonalBaseDto);
+    const dto = await this.ctx.validate<EditPersonalBaseIsDefaultDto>(EditPersonalBaseIsDefaultDto);
 
     const result = await this.service.personal.base.update(id, dto);
     if (!result) {

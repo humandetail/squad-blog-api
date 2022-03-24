@@ -12,8 +12,8 @@ import {
   IsIn
 } from 'class-validator';
 import { Expose, Transform } from 'class-transformer';
-import { PageGetDto } from '../common/common';
-export class CreatePersonalBaseDto {
+import { BaseCreateDto, PageGetDto } from '../common/common';
+export class CreatePersonalBaseDto extends BaseCreateDto {
   @Length(2, 32, { message: '昵称长度为2-32个字符' })
   @IsString()
   @Expose()
@@ -22,24 +22,28 @@ export class CreatePersonalBaseDto {
   @IsOptional()
   @Length(5, 11, { message: 'qq长度为5-11个字符' })
   @IsNumberString(undefined, { message: 'qq只能为数字' })
+  @Transform(v => (v ? v : undefined), { toClassOnly: true })
   @Expose()
   qq?: string;
 
   @IsOptional()
   @IsUrl(undefined, { message: '请输入正确的url地址' })
   @MaxLength(128, { message: 'url地址不能超过128个字符' })
+  @Transform(v => (v ? v : undefined), { toClassOnly: true })
   @Expose()
   blog?: string;
 
   @IsOptional()
   @IsUrl(undefined, { message: '请输入正确的url地址' })
   @MaxLength(128, { message: 'url地址不能超过128个字符' })
+  @Transform(v => (v ? v : undefined), { toClassOnly: true })
   @Expose()
   github?: string;
 
   @IsOptional()
   @IsEmail(undefined, { message: '请输入正确的email地址' })
   @MaxLength(128, { message: 'email地址不能超过128个字符' })
+  @Transform(v => (v ? v : undefined), { toClassOnly: true })
   @Expose()
   email?: string;
 
@@ -53,19 +57,6 @@ export class CreatePersonalBaseDto {
   @Transform(v => v && parseInt(v), { toClassOnly: true })
   @Expose()
   avatarId?: number;
-
-  @IsOptional()
-  @IsNumberString(undefined, { message: '排序值必须是数值类型' })
-  @Expose()
-  sort?: number;
-
-  @IsOptional()
-  @IsInt({ message: '是否显示字段必须是0或者1' })
-  @Min(0, { message: '是否显示字段必须是0或者1' })
-  @Max(1, { message: '是否显示字段必须是0或者1' })
-  @Transform(v => v && parseInt(v), { toClassOnly: true })
-  @Expose()
-  isShow: number;
 
   @IsOptional()
   @IsInt({ message: '是否为默认字段必须是0或者1' })
@@ -100,7 +91,16 @@ export class UpdatePersonalBaseDto extends CreatePersonalBaseDto {
   nickname: string;
 }
 
-export class EditPersonalBaseDto {
+export class EditPersonalBaseIsShowDto {
+  @IsInt({ message: '是否为默认字段必须是0或者1' })
+  @Min(0, { message: '是否为默认字段必须是0或者1' })
+  @Max(1, { message: '是否为默认字段必须是0或者1' })
+  @Transform(v => v && parseInt(v), { toClassOnly: true })
+  @Expose()
+  isShow: number;
+}
+
+export class EditPersonalBaseIsDefaultDto {
   @IsInt({ message: '是否为默认字段必须是0或者1' })
   @Min(0, { message: '是否为默认字段必须是0或者1' })
   @Max(1, { message: '是否为默认字段必须是0或者1' })
