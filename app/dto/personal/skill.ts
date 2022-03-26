@@ -57,7 +57,7 @@ class SkillBatchDto {
     message: 'id集合必须是个 Array<string> 类型'
   })
   @Expose()
-  ids?: string[];
+  ids?: number[];
 }
 
 export class BatchSkillMountDto extends SkillBatchDto {

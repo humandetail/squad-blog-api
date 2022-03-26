@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import {
   Length,
   IsString,
@@ -61,13 +60,12 @@ class WorkBatchDto {
   isAll?: boolean;
 
   @IsOptional()
-  @IsArray({ message: 'id集合必须是个 Array<number> 类型' })
+  @IsArray({ message: 'id集合必须是个 Array<string> 类型' })
   @ArrayMinSize(1, { message: 'id集合不能为空' })
   @IsInt({
     each: true,
-    message: 'id集合必须是个 Array<number> 类型'
+    message: 'id集合必须是个 Array<string> 类型'
   })
-  @Transform(v => _.isArray(v) && v.map(val => parseInt(val)), { toClassOnly: true })
   @Expose()
   ids?: number[];
 }
