@@ -9,7 +9,7 @@ import BaseController from '../../BaseController';
  */
 export default class CommonController extends BaseController {
   /**
-   * @api {get} /setting 获取网站设置
+   * @api {get} /frontend-service/settings 获取网站设置
    * @apiGroup Frontend - Common
    * @apiUse Auth
    * @apiUse InfoRes
