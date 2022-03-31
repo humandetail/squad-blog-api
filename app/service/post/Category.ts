@@ -36,6 +36,19 @@ export default class PostCategoryService extends BaseService {
     return this.getRepo().post.Category.findOne({ where });
   }
 
+  async findAll () {
+    return this.getRepo().post.Category.findAndCount({
+      select: ['id', 'name', 'displayName', 'createdTime', 'updatedTime'],
+      where: {
+        isShow: 1
+      },
+      order: {
+        sort: 'DESC',
+        createdTime: 'DESC'
+      }
+    });
+  }
+
   async delete (id: number) {
     const { affected } = await this.getRepo().post.Category.delete(id);
 

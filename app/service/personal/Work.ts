@@ -19,6 +19,20 @@ export default class PersonalWorkService extends BaseService {
     } as any);
   }
 
+  async findAll () {
+    return await this.getRepo().personal.PersonalWork.find({
+      // select: ['id', 'name', 'description', 'link', 'pictures'],
+      where: {
+        isShow: 1
+      },
+      order: {
+        sort: 'DESC',
+        createdTime: 'DESC'
+      },
+      relations: ['pictures']
+    });
+  }
+
   async create ({
     name,
     link,

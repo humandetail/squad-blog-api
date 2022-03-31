@@ -15,6 +15,8 @@ import ExportBackendResourcePostTemplate from '../../../app/controller/backend/r
 import ExportBackendSysMenu from '../../../app/controller/backend/sys/Menu';
 import ExportBackendSysRole from '../../../app/controller/backend/sys/Role';
 import ExportBackendSysSetting from '../../../app/controller/backend/sys/Setting';
+import ExportFrontendCommonCommon from '../../../app/controller/frontend/common/Common';
+import ExportFrontendPostPost from '../../../app/controller/frontend/post/Post';
 import ExportBackendResourcePictureCategory from '../../../app/controller/backend/resource/picture/Category';
 import ExportBackendResourcePicturePicture from '../../../app/controller/backend/resource/picture/Picture';
 import ExportBackendSysUserUser from '../../../app/controller/backend/sys/user/User';
@@ -51,6 +53,14 @@ declare module 'egg' {
         user: {
           user: ExportBackendSysUserUser;
         }
+      }
+    }
+    frontend: {
+      common: {
+        common: ExportFrontendCommonCommon;
+      }
+      post: {
+        post: ExportFrontendPostPost;
       }
     }
   }

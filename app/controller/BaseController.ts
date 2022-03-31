@@ -27,6 +27,12 @@ export interface IResponseOptions {
  */
 
 /**
+ * @apiDefine FrontendPageReq
+ * @apiParam {Number} [current=1] 当前页码
+ * @apiParam {Number} [pageSize=10] 每页数据量
+ */
+
+/**
  * @apiDefine Auth
  * @apiHeader {String} Authorization Bearer Token
  */

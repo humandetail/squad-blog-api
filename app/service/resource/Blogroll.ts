@@ -49,6 +49,19 @@ export default class BlogrollService extends BaseService {
     return await this.getRepo().resource.Blogroll.findAndCount(options);
   }
 
+  async findAll () {
+    return await this.getRepo().resource.Blogroll.findAndCount({
+      select: ['id', 'link', 'name', 'remarks', 'createdTime', 'updatedTime'],
+      where: {
+        isShow: 1
+      },
+      order: {
+        sort: 'DESC',
+        createdTime: 'DESC'
+      }
+    });
+  }
+
   async delete (id: number) {
     const blogroll = await this.getRepo().resource.Blogroll.findOne(id);
 

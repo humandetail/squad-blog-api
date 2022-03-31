@@ -235,6 +235,49 @@ export function formatPost ({
   });
 }
 
+/**
+ * 格式化返回的文章信息
+ */
+export function formatFrontendPost ({
+  tags,
+  cover,
+  category,
+  id,
+  title,
+  summary,
+  author,
+  recommendationIndex,
+  createdTime,
+  updatedTime
+}: IPostWithViewCount) {
+  let coverPic = '';
+  let categoryName = '';
+  let categoryDisplayName = '';
+
+  if (cover) {
+    coverPic = cover.qiniuDomain + cover.qiniuKey;
+  }
+
+  if (category) {
+    categoryName = category.name;
+    categoryDisplayName = category.displayName;
+  }
+
+  return formatDateField({
+    id,
+    title,
+    summary,
+    author,
+    recommendationIndex,
+    categoryName,
+    categoryDisplayName,
+    coverPic,
+    tags: tags ? tags.map(({ name, displayName }) => ({ name, displayName })) : [],
+    createdTime,
+    updatedTime
+  });
+}
+
 // 格式化角色权限菜单信息
 export function formatRoleMenus ({ menus, ...role }: Role) {
   return formatDateField({

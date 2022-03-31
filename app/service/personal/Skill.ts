@@ -83,6 +83,20 @@ export default class PersonalSkillService extends BaseService {
     } as any);
   }
 
+  async findAll () {
+    return await this.getRepo().personal.PersonalSkill.find({
+      select: ['id', 'name', 'description', 'icon'],
+      where: {
+        isShow: 1
+      },
+      order: {
+        sort: 'DESC',
+        createdTime: 'DESC'
+      },
+      relations: ['icon']
+    });
+  }
+
   async delete (id: number) {
     const personalSkill = await this.getRepo().personal.PersonalSkill.findOne(id);
 

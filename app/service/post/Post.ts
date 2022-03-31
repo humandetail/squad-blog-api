@@ -152,6 +152,34 @@ export default class PostService extends BaseService {
     };
   }
 
+  async findPrevAndNext (id: string) {
+    const PostRepo = this.getRepo().post.Post;
+    const { createdTime } = await PostRepo.findOne(id) || {};
+    if (!createdTime) {
+      return [null, null];
+    }
+    function query (createdTime: Date, isPrev = false) {
+      return PostRepo.query(`
+        SELECT
+          id,
+          title
+        FROM
+          post 
+        WHERE
+          (
+            is_show = 1 
+          AND DATEDIFF(created_time, FROM_UNIXTIME(${createdTime.getTime() / 1000})) ${isPrev ? '<' : '>'} 0) 
+        ORDER BY
+          created_time ${isPrev ? 'DESC' : 'ASC'} 
+          LIMIT 1;
+      `);
+    }
+    const next = await query(createdTime, false);
+    const prev = await query(createdTime, true);
+
+    return [prev[0] ? prev[0] : null, next[0] ? next[0] : null];
+  }
+
   async delete (id: string) {
     const post = await this.getRepo().post.Post.findOne(id, { relations: ['tags'] });
     if (!post) {

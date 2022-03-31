@@ -88,3 +88,24 @@ export class PageGetDto {
   @Expose()
   sortDesc?: boolean;
 }
+
+export class FrontendPageGetDto {
+  @IsOptional()
+  @IsInt({ message: '当前页码必须是一个正整数' })
+  @Min(0, { message: '当前页码必须是一个正整数' })
+  @Transform(v => v && parseInt(v), { toClassOnly: true })
+  @Expose()
+  current?: number;
+
+  @IsOptional()
+  @IsInt({ message: '单页数量必须是一个正整数' })
+  @Min(0, { message: '单页数量必须是一个正整数' })
+  @Transform(v => v && parseInt(v), { toClassOnly: true })
+  @Expose()
+  pageSize?: number;
+
+  @IsOptional()
+  @IsString()
+  @Expose()
+  keyword?: string;
+}
