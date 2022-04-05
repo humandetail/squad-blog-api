@@ -73,7 +73,7 @@ export default class PostTagService extends BaseService {
     `);
   }
 
-  async getPostsByTagIds (tagId: number, ids: string[], { current = 1, pageSize = 10 }: FrontendPageGetDto): Promise<[Record<string, any>[], number]> {
+  async getPostsByTagIds (tagId: number, ids: string[]): Promise<[Record<string, any>[], number]> {
     const [ { total = 0 } ] = await this.getRepo().post.Tag.query(`
       SELECT
         COUNT( DISTINCT Post.id ) AS total 
@@ -86,10 +86,8 @@ export default class PostTagService extends BaseService {
       WHERE
         (
           Post.is_show = 1 
-        AND Post.id IN ( "${ids.join('","')}" ) AND Post_Post__tags.tagId = ${tagId});
+        AND Post_Post__tags.tagId = ${tagId});
     `);
-
-    console.log('total: ', total);
 
     if (total <= 0) {
       return [[], 0];
@@ -116,8 +114,7 @@ export default class PostTagService extends BaseService {
         Post.is_show = 1 AND Post.id IN ( "${ids.join('","')}" ) and Post_Post__tags.tagId = ${tagId}
       ORDER BY
         Post.sort DESC,
-        Post.created_time DESC
-      LIMIT ${(current - 1) * pageSize},${pageSize};
+        Post.created_time DESC;
     `);
 
     return [posts, +total];

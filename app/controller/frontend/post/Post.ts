@@ -1,7 +1,7 @@
 import { Like } from 'typeorm';
 import { FrontendPageGetDto } from '../../../dto/common/common';
 import { Route } from '../../../libs/decorators/RouterRegister';
-import { formatFrontendPost } from '../../../libs/utils';
+import { formatFrontendPost, formatFrontendPostDetail } from '../../../libs/utils';
 import BaseController from '../../BaseController';
 
 /**
@@ -198,7 +198,6 @@ export default class CommonController extends BaseController {
     const { ctx, service } = this;
 
     const dto = await ctx.validate<FrontendPageGetDto>(FrontendPageGetDto, this.getQuery());
-
     const { name } = this.getParams();
 
     const category = await service.post.category.findOne({
@@ -271,7 +270,7 @@ export default class CommonController extends BaseController {
 
     const postIds = await service.post.tag.getPostIdsByTagId(tag.id, dto);
 
-    const [posts, total] = await service.post.tag.getPostsByTagIds(tag.id, postIds.map(({ postId }) => postId), dto);
+    const [posts, total] = await service.post.tag.getPostsByTagIds(tag.id, postIds.map(({ postId }) => postId));
 
     this.res({
       data: this.pageWrapper(
@@ -329,15 +328,15 @@ export default class CommonController extends BaseController {
     }
 
     const [prev, next] = await this.service.post.post.findPrevAndNext(id);
-    const {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      operator, isShow, sort,
-      ...otherPostFileds
-    } = post;
+    // const {
+    //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    //   operator, isShow, sort,
+    //   ...otherPostFileds
+    // } = post;
 
     this.res({
       data: {
-        post: this.formatDateField(otherPostFileds),
+        post: this.formatDateField(formatFrontendPostDetail(post)),
         prev,
         next
       },

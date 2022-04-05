@@ -6,6 +6,7 @@ import * as moment from 'moment';
 import PersonalBase from '../entities/mysql/personal/PersonalBase';
 import PersonalSkill from '../entities/mysql/personal/PersonalSkill';
 import PersonalWork from '../entities/mysql/personal/PersonalWork';
+import Post from '../entities/mysql/post/Post';
 import PostTemplate from '../entities/mysql/resource/PostTemplate';
 import Role from '../entities/mysql/sys/Role';
 import Setting from '../entities/mysql/sys/Setting';
@@ -276,6 +277,45 @@ export function formatFrontendPost ({
     createdTime,
     updatedTime
   });
+}
+
+// 格式化前台返回的文章详情信息
+export function formatFrontendPostDetail ({
+  createdTime,
+  updatedTime,
+  id,
+  title,
+  summary,
+  content,
+  author,
+  source,
+  recommendationIndex,
+  seoTitle,
+  seoKeywords,
+  seoDescription,
+  tags,
+  category,
+  cover,
+  template
+}: Post) {
+  return {
+    id,
+    title,
+    summary,
+    content,
+    author,
+    source,
+    recommendationIndex,
+    seoTitle,
+    seoKeywords,
+    seoDescription,
+    createdTime,
+    updatedTime,
+    tags: (tags || []).map(({ name, displayName }) => ({ name, displayName })),
+    category: category ? { name: category.name, displayName: category.displayName } : null,
+    coverPic: cover ? cover.qiniuDomain + cover.qiniuKey : '',
+    template: template ? template.qiniuDomain + template.qiniuKey : ''
+  };
 }
 
 // 格式化角色权限菜单信息

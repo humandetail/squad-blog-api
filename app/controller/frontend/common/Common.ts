@@ -19,7 +19,6 @@ export default class CommonController extends BaseController {
    * @apiSuccess {String} data.seoKeywords seo keywords
    * @apiSuccess {String} data.seoDescription seo description
    * @apiSuccess {String} data.status 运行状态
-   * @apiSuccess {Number} data.logoId 外键-logo id
    * @apiSuccess {String} data.logoPic logo url
    */
   @Route('get', '/frontend-service/settings')
@@ -33,8 +32,11 @@ export default class CommonController extends BaseController {
       return;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, isShow, logoId, sort, operator, ...data } = formatSetting(setting);
+
     this.res({
-      data: formatSetting(setting)
+      data
     });
   }
 
@@ -166,8 +168,9 @@ export default class CommonController extends BaseController {
             name,
             description,
             link,
-            pictures: pictures.map(({ name: picName, qiniuDomain, qiniuKey }) => {
+            pictures: pictures.map(({ id, name: picName, qiniuDomain, qiniuKey }) => {
               return {
+                id,
                 name: picName,
                 url: qiniuDomain + qiniuKey
               };
