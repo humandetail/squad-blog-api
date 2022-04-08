@@ -6,7 +6,6 @@ import * as moment from 'moment';
 import PersonalBase from '../entities/mysql/personal/PersonalBase';
 import PersonalSkill from '../entities/mysql/personal/PersonalSkill';
 import PersonalWork from '../entities/mysql/personal/PersonalWork';
-import Post from '../entities/mysql/post/Post';
 import PostTemplate from '../entities/mysql/resource/PostTemplate';
 import Role from '../entities/mysql/sys/Role';
 import Setting from '../entities/mysql/sys/Setting';
@@ -296,8 +295,9 @@ export function formatFrontendPostDetail ({
   tags,
   category,
   cover,
-  template
-}: Post) {
+  template,
+  viewCount
+}: IPostWithViewCount) {
   return {
     id,
     title,
@@ -309,6 +309,7 @@ export function formatFrontendPostDetail ({
     seoTitle,
     seoKeywords,
     seoDescription,
+    viewCount,
     createdTime,
     updatedTime,
     tags: (tags || []).map(({ name, displayName }) => ({ name, displayName })),

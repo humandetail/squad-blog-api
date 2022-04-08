@@ -140,8 +140,15 @@ export default class PostService extends BaseService {
     return [posts, total];
   }
 
-  async findOne (where: IWhereCondition<Post>, relations: string[] = [], withViewCount = false): Promise<IPostWithViewCount | undefined> {
+  async findOne (where: IWhereCondition<Post>, relations: string[] = [], withViewCount = false, statistics = false): Promise<IPostWithViewCount | undefined> {
     const post = await this.getRepo().post.Post.findOne({ where, relations });
+    if (post && statistics) {
+      const postView = new PostView();
+      postView.ip = this.ctx.helper.getIp();
+      postView.postId = post.id;
+
+      this.getMongoDBManger().save(PostView, postView);
+    }
     if (!post || !withViewCount) {
       return post;
     }
@@ -168,7 +175,8 @@ export default class PostService extends BaseService {
         WHERE
           (
             is_show = 1 
-          AND DATEDIFF(created_time, FROM_UNIXTIME(${createdTime.getTime() / 1000})) ${isPrev ? '<' : '>'} 0) 
+            AND FLOOR(unix_timestamp(created_time)) ${isPrev ? '<' : '>'} ${Math.floor(createdTime.getTime() / 1000)}
+          ) 
         ORDER BY
           created_time ${isPrev ? 'DESC' : 'ASC'} 
           LIMIT 1;

@@ -318,7 +318,7 @@ export default class CommonController extends BaseController {
       'category',
       'cover',
       'template'
-    ]);
+    ], /* 获取访问量 */true, /* 统计访问量 */true);
 
     if (!post) {
       this.res({
@@ -328,11 +328,6 @@ export default class CommonController extends BaseController {
     }
 
     const [prev, next] = await this.service.post.post.findPrevAndNext(id);
-    // const {
-    //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    //   operator, isShow, sort,
-    //   ...otherPostFileds
-    // } = post;
 
     this.res({
       data: {
