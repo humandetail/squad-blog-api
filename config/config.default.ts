@@ -6,7 +6,8 @@ const str = JSON.parse(readFileSync(resolve(__dirname, './account.config.json'),
 const {
   typeorm,
   redis,
-  qiniu
+  qiniu,
+  jwt
 } = str;
 
 export default (appInfo: EggAppInfo) => {
@@ -89,6 +90,9 @@ export default (appInfo: EggAppInfo) => {
   // 七牛配置
   // @see https://developer.qiniu.com/kodo/sdk/nodejs
   config.qiniu = qiniu;
+
+  // jwt配置
+  config.jwt = jwt;
 
   // add your special config in here
   const bizConfig = {
