@@ -47,6 +47,9 @@
     "zone": "Zone_z2",
     "bucket": "squad-dev",
     "ossDomain": "http://r3eyoxri0.hn-bkt.clouddn.com/"
+  },
+  "jwt": {
+    "secret": "H5IOzF0AbaUhYosuT6rKeBqwRdDPiELQ"
   }
 }
 ```
