@@ -29,9 +29,9 @@ export class UpdateSettingDto extends BaseUpdateDto {
   @Expose()
   seoDescription: string;
 
-  @IsInt({ message: '状态必须是个数字：0=正常状态，1=升级维护，2=网站已关闭' })
-  @Min(0, { message: '状态必须是个数字：0=正常状态，1=升级维护，2=网站已关闭' })
-  @Max(2, { message: '状态必须是个数字：0=正常状态，1=升级维护，2=网站已关闭' })
+  @IsInt({ message: '状态必须是个数字：0=正常状态，1=升级维护，2=网站已关闭, 3=置灰状态' })
+  @Min(0, { message: '状态必须是个数字：0=正常状态，1=升级维护，2=网站已关闭, 3=置灰状态' })
+  @Max(3, { message: '状态必须是个数字：0=正常状态，1=升级维护，2=网站已关闭, 3=置灰状态' })
   @Transform(v => v && parseInt(v), { toClassOnly: true })
   @Expose()
   status: number;
