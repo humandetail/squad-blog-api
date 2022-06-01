@@ -47,7 +47,7 @@ export default class Post extends BaseEntity {
   summary: string;
 
   @Column({
-    type: 'text',
+    type: 'mediumtext',
     comment: '文章内容 markdown 格式'
   })
   content: string;
