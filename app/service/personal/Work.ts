@@ -1,11 +1,10 @@
 import * as _ from 'lodash';
-import { FindConditions, FindManyOptions, In } from 'typeorm';
+import { FindManyOptions, In } from 'typeorm';
 import { BatchWorkMountDto, BatchWorkShowDto, CreatePersonalWorkDto, UpdatePersonalWorkDto } from '../../dto/personal/work';
-import PersonalWork from '../../entities/mysql/personal/PersonalWork';
-import BaseService, { IWhereCondition } from '../BaseService';
+import BaseService from '../BaseService';
 
 export default class PersonalWorkService extends BaseService {
-  async findOne (where: IWhereCondition<PersonalWork>, relations: string[] = []) {
+  async findOne (where: any, relations: string[] = []) {
     return this.getRepo().personal.PersonalWork.findOne({
       where,
       relations
@@ -54,7 +53,7 @@ export default class PersonalWorkService extends BaseService {
       this.ctx.throw('不存在的图片资源', 422);
     }
 
-    const base = await this.getRepo().personal.PersonalBase.findOne(baseId);
+    const base = await this.getRepo().personal.PersonalBase.findOne({ where: { id: baseId } });
 
     if (!base) {
       this.ctx.throw('不存在的挂载点');
@@ -100,7 +99,7 @@ export default class PersonalWorkService extends BaseService {
     }
 
     if (baseId) {
-      const base = await this.getRepo().personal.PersonalBase.findOne(baseId);
+      const base = await this.getRepo().personal.PersonalBase.findOne({ where: { id: baseId } });
 
       if (!base) {
         this.ctx.throw('不存在的挂载点', 422);
@@ -123,7 +122,7 @@ export default class PersonalWorkService extends BaseService {
   }
 
   async delete (id: number) {
-    const personalWork = await this.getRepo().personal.PersonalWork.findOne(id);
+    const personalWork = await this.getRepo().personal.PersonalWork.findOne({ where: { id } });
 
     if (!personalWork) {
       return false;
@@ -135,10 +134,10 @@ export default class PersonalWorkService extends BaseService {
   }
 
   async batchMount ({ baseId, newBaseId, isAll, ids = [] }: BatchWorkMountDto) {
-    const where: FindConditions<PersonalWork> = {};
+    const where: any = {};
 
     if (baseId) {
-      const base = await this.getRepo().personal.PersonalBase.findOne({ id: baseId });
+      const base = await this.getRepo().personal.PersonalBase.findOne({ where: { id: baseId } });
       if (!base) {
         this.ctx.throw('原挂载点不存在', 422);
       }
@@ -158,7 +157,7 @@ export default class PersonalWorkService extends BaseService {
       return false;
     }
 
-    const newBase = await this.getRepo().personal.PersonalBase.findOne({ id: newBaseId });
+    const newBase = await this.getRepo().personal.PersonalBase.findOne({ where: { id: newBaseId } });
 
     if (!newBase) {
       this.ctx.throw('新挂载点不存在', 422);

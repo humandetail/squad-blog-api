@@ -1,7 +1,7 @@
-import { FindConditions, FindManyOptions, In } from 'typeorm';
+import { FindManyOptions, In } from 'typeorm';
 import { isNull, isUndefined, isEqual } from 'lodash';
 import { BatchPostCategoryDto, BatchPostShowDto, BatchPostTagDto, BatchPostTemplateDto, CreatePostDto, EBatchTagAction, UpdatePostDto } from '../../dto/post/post';
-import BaseService, { IWhereCondition } from '../BaseService';
+import BaseService from '../BaseService';
 import Post from '../../entities/mysql/post/Post';
 import PostView from '../../entities/mongodb/article/PostView';
 
@@ -21,12 +21,12 @@ export default class PostService extends BaseService {
     ...data
   }: CreatePostDto) {
     const Repo = this.getRepo();
-    const category = await Repo.post.Category.findOne({ id: categoryId });
+    const category = await Repo.post.Category.findOne({ where: { id: categoryId } });
     if (!category) {
       this.ctx.throw('文章分类不存在', 422);
     }
 
-    const cover = await Repo.resource.Picture.findOne({ id: coverId });
+    const cover = await Repo.resource.Picture.findOne({ where: { id: coverId } });
     if (!cover) {
       this.ctx.throw('图片不存在', 422);
     }
@@ -49,7 +49,7 @@ export default class PostService extends BaseService {
     });
 
     if (templateId) {
-      const template = await Repo.resource.PostTemplate.findOne({ id: templateId });
+      const template = await Repo.resource.PostTemplate.findOne({ where: { id: templateId } });
       if (!template) {
         this.ctx.throw('模板不存在', 422);
       }
@@ -70,7 +70,7 @@ export default class PostService extends BaseService {
     const Repo = this.getRepo();
     const Post = Repo.post.Post;
     const post = await Post.findOne({
-      where: { id },
+      where: { id: `${id}` },
       relations: ['tags', 'cover', 'template', 'category']
     });
     if (!post) {
@@ -78,7 +78,7 @@ export default class PostService extends BaseService {
     }
 
     if (categoryId && post.category.id !== categoryId) {
-      const category = await Repo.post.Category.findOne({ id: categoryId });
+      const category = await Repo.post.Category.findOne({ where: { id: categoryId } });
       if (!category) {
         this.ctx.throw('文章分类不存在', 422);
       }
@@ -86,7 +86,7 @@ export default class PostService extends BaseService {
     }
 
     if (coverId && post.cover.id !== coverId) {
-      const cover = await Repo.resource.Picture.findOne({ id: coverId });
+      const cover = await Repo.resource.Picture.findOne({ where: { id: coverId } });
       if (!cover) {
         this.ctx.throw('图片不存在', 422);
       }
@@ -94,7 +94,7 @@ export default class PostService extends BaseService {
     }
 
     if (templateId && post.template.id !== templateId) {
-      const template = await Repo.resource.PostTemplate.findOne({ id: templateId });
+      const template = await Repo.resource.PostTemplate.findOne({ where: { id: templateId } });
       if (!template) {
         this.ctx.throw('模板不存在', 422);
       }
@@ -127,7 +127,7 @@ export default class PostService extends BaseService {
     if (withViewCount) {
       const data: Array<Post & { viewCount: number }> = [];
       for (const post of posts) {
-        const viewCount = await this.getMongoDBManger().count(PostView, { postId: post.id });
+        const viewCount = await this.getMongoDBManger().count(PostView, { where: { postId: post.id } });
         data.push({
           ...post,
           viewCount
@@ -140,19 +140,20 @@ export default class PostService extends BaseService {
     return [posts, total];
   }
 
-  async findOne (where: IWhereCondition<Post>, relations: string[] = [], withViewCount = false, statistics = false): Promise<IPostWithViewCount | undefined> {
+  async findOne (where: any, relations: string[] = [], withViewCount = false, statistics = false): Promise<IPostWithViewCount | undefined> {
     const post = await this.getRepo().post.Post.findOne({ where, relations });
     if (post && statistics) {
       const postView = new PostView();
       postView.ip = this.ctx.helper.getIp();
       postView.postId = post.id;
 
-      this.getMongoDBManger().save(PostView, postView);
+      // 上报文章访问数据
+      this.service.statistics.statistics.addPostView(postView);
     }
     if (!post || !withViewCount) {
-      return post;
+      return post as any;
     }
-    const viewCount = await this.getMongoDBManger().count(PostView, { postId: post.id });
+    const viewCount = await this.getMongoDBManger().count(PostView, { where: { postId: post.id } });
     return {
       ...post,
       viewCount
@@ -161,7 +162,7 @@ export default class PostService extends BaseService {
 
   async findPrevAndNext (id: string) {
     const PostRepo = this.getRepo().post.Post;
-    const { createdTime } = await PostRepo.findOne(id) || {};
+    const { createdTime } = await PostRepo.findOne({ where: { id } }) || {};
     if (!createdTime) {
       return [null, null];
     }
@@ -189,7 +190,7 @@ export default class PostService extends BaseService {
   }
 
   async delete (id: string) {
-    const post = await this.getRepo().post.Post.findOne(id, { relations: ['tags'] });
+    const post = await this.getRepo().post.Post.findOne({ where: { id }, relations: ['tags'] });
     if (!post) {
       return false;
     }
@@ -206,10 +207,10 @@ export default class PostService extends BaseService {
   }
 
   async batchCategory ({ categoryId, newCategoryId, isAll, ids = [] }: BatchPostCategoryDto) {
-    const where: FindConditions<Post> = {};
+    const where: any = {};
 
     if (categoryId) {
-      const category = await this.getRepo().post.Category.findOne({ id: categoryId });
+      const category = await this.getRepo().post.Category.findOne({ where: { id: categoryId } });
       if (!category) {
         this.ctx.throw('原分类不存在', 422);
       }
@@ -229,7 +230,7 @@ export default class PostService extends BaseService {
       return false;
     }
 
-    const newCategory = await this.getRepo().post.Category.findOne({ id: newCategoryId });
+    const newCategory = await this.getRepo().post.Category.findOne({ where: { id: newCategoryId } });
 
     if (!newCategory) {
       this.ctx.throw('新分类不存在', 422);
@@ -244,10 +245,10 @@ export default class PostService extends BaseService {
   }
 
   async batchTemplate ({ templateId, newTemplateId, isAll, ids = [] }: BatchPostTemplateDto) {
-    const where: FindConditions<Post> = {};
+    const where: any = {};
 
     if (templateId) {
-      const template = await this.getRepo().resource.PostTemplate.findOne({ id: templateId });
+      const template = await this.getRepo().resource.PostTemplate.findOne({ where: { id: templateId } });
       if (!template) {
         this.ctx.throw('原模板不存在', 422);
       }
@@ -267,7 +268,7 @@ export default class PostService extends BaseService {
       return false;
     }
 
-    const newTemplate = await this.getRepo().resource.PostTemplate.findOne({ id: newTemplateId });
+    const newTemplate = await this.getRepo().resource.PostTemplate.findOne({ where: { id: newTemplateId } });
 
     if (!newTemplate) {
       this.ctx.throw('新模板不存在', 422);
@@ -312,7 +313,7 @@ export default class PostService extends BaseService {
   }
 
   async batchTag ({ tagId, newTagId, action, isAll = false, ids = [] }: BatchPostTagDto) {
-    const tag = await this.getRepo().post.Tag.findOne({ id: newTagId });
+    const tag = await this.getRepo().post.Tag.findOne({ where: { id: newTagId } });
     if (!tag) {
       this.ctx.throw('不存在的标签', 422);
     }
@@ -333,7 +334,7 @@ export default class PostService extends BaseService {
         break;
       case EBatchTagAction.change:
         // eslint-disable-next-line no-case-declarations
-        const oldTag = await this.getRepo().post.Tag.findOne({ id: tagId });
+        const oldTag = await this.getRepo().post.Tag.findOne({ where: { id: tagId } });
         if (!oldTag) {
           this.ctx.throw('旧标签不存在', 422);
         }

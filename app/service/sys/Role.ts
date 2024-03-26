@@ -1,8 +1,7 @@
 import { isNull, isUndefined, isEqual } from 'lodash';
 import { FindManyOptions, In } from 'typeorm';
 import { CreateRoleDto, RoleMenusDto, UpdateRoleDto } from '../../dto/sys/role';
-import Role from '../../entities/mysql/sys/Role';
-import BaseService, { IWhereCondition } from '../BaseService';
+import BaseService from '../BaseService';
 
 export default class RoleService extends BaseService {
   async create (data: CreateRoleDto, initRole = false) {
@@ -77,7 +76,7 @@ export default class RoleService extends BaseService {
     } as any);
   }
 
-  async findOne (where: IWhereCondition<Role>, relations: string[] = []) {
+  async findOne (where: any, relations: string[] = []) {
     return this.getRepo().sys.Role.findOne({ where, relations });
   }
 

@@ -12,6 +12,7 @@ import ExportBackendPostPost from '../../../app/controller/backend/post/Post';
 import ExportBackendPostTag from '../../../app/controller/backend/post/Tag';
 import ExportBackendResourceBlogroll from '../../../app/controller/backend/resource/Blogroll';
 import ExportBackendResourcePostTemplate from '../../../app/controller/backend/resource/PostTemplate';
+import ExportBackendStatisticsStatistics from '../../../app/controller/backend/statistics/Statistics';
 import ExportBackendSysMenu from '../../../app/controller/backend/sys/Menu';
 import ExportBackendSysRole from '../../../app/controller/backend/sys/Role';
 import ExportBackendSysSetting from '../../../app/controller/backend/sys/Setting';
@@ -45,6 +46,9 @@ declare module 'egg' {
           category: ExportBackendResourcePictureCategory;
           picture: ExportBackendResourcePicturePicture;
         }
+      }
+      statistics: {
+        statistics: ExportBackendStatisticsStatistics;
       }
       sys: {
         menu: ExportBackendSysMenu;

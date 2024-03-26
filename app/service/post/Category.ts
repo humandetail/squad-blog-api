@@ -1,8 +1,7 @@
 import { FindManyOptions } from 'typeorm';
 import { isNull, isUndefined } from 'lodash';
 import { PostCategoryDto } from '../../dto/post/category';
-import Category from '../../entities/mysql/post/Category';
-import BaseService, { IWhereCondition } from '../BaseService';
+import BaseService from '../BaseService';
 
 export default class PostCategoryService extends BaseService {
   async create (category: PostCategoryDto) {
@@ -14,7 +13,7 @@ export default class PostCategoryService extends BaseService {
 
   async update (id: number, category: Partial<PostCategoryDto>) {
     const PostCategory = this.getRepo().post.Category;
-    const data = await PostCategory.findOne(id);
+    const data = await PostCategory.findOne({ where: { id } });
     if (!data) {
       return false;
     }
@@ -32,7 +31,7 @@ export default class PostCategoryService extends BaseService {
     return this.getRepo().post.Category.findAndCount(options);
   }
 
-  async findOne (where: IWhereCondition<Category>) {
+  async findOne (where: any) {
     return this.getRepo().post.Category.findOne({ where });
   }
 

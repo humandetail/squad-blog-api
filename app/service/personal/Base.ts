@@ -1,7 +1,6 @@
 import { FindManyOptions } from 'typeorm';
 import { CreatePersonalBaseDto, UpdatePersonalBaseDto } from '../../dto/personal/base';
-import PersonalBase from '../../entities/mysql/personal/PersonalBase';
-import BaseService, { IWhereCondition } from '../BaseService';
+import BaseService from '../BaseService';
 
 type IUpdateInfo = Partial<UpdatePersonalBaseDto>;
 
@@ -28,7 +27,7 @@ export default class PersonalBaseService extends BaseService {
 
     // 获取头像信息
     const avatarInfo = avatarId
-      ? await this.getRepo().resource.Picture.findOne(avatarId)
+      ? await this.getRepo().resource.Picture.findOne({ where: { id: avatarId } })
       : null;
 
     // 启动事务
@@ -84,7 +83,7 @@ export default class PersonalBaseService extends BaseService {
 
       // 1. 判断是否需要更改头像信息
       if (info.avatarId && info.avatarId !== personalBase.avatar.id) {
-        const pic = await manager.findOne(this.getEntity().resource.Picture, info.avatarId);
+        const pic = await manager.findOne(this.getEntity().resource.Picture, { where: { id: info.avatarId } });
         if (!pic) {
           this.ctx.throw('不存在的头像信息', 422);
         }
@@ -121,7 +120,7 @@ export default class PersonalBaseService extends BaseService {
     return true;
   }
 
-  async findOne (where: IWhereCondition<PersonalBase>, relations: string[] = ['user', 'avatar']) {
+  async findOne (where: any, relations: string[] = ['user', 'avatar']) {
     const personalBase = await this.getRepo().personal.PersonalBase.findOne({
       where,
       relations
@@ -138,7 +137,7 @@ export default class PersonalBaseService extends BaseService {
   }
 
   async delete (id: number) {
-    const personalBase = await this.getRepo().personal.PersonalBase.findOne(id);
+    const personalBase = await this.getRepo().personal.PersonalBase.findOne({ where: { id } });
 
     if (!personalBase) {
       return false;

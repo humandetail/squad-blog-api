@@ -1,8 +1,7 @@
 import * as _ from 'lodash';
-import { FindConditions, FindManyOptions, In } from 'typeorm';
+import { FindManyOptions, In } from 'typeorm';
 import { BatchSkillMountDto, BatchSkillShowDto, CreatePersonalSkillDto, UpdatePersonalSkillDto } from '../../dto/personal/skill';
-import PersonalSkill from '../../entities/mysql/personal/PersonalSkill';
-import BaseService, { IWhereCondition } from '../BaseService';
+import BaseService from '../BaseService';
 
 type IUpdatePersonalSkillInfo = Partial<UpdatePersonalSkillDto>;
 
@@ -69,7 +68,7 @@ export default class PersonalSkillService extends BaseService {
     return true;
   }
 
-  async findOne (where: IWhereCondition<PersonalSkill>, relations: string[] = ['base', 'icon']) {
+  async findOne (where: any, relations: string[] = ['base', 'icon']) {
     return this.getRepo().personal.PersonalSkill.findOne({
       where,
       relations
@@ -98,7 +97,7 @@ export default class PersonalSkillService extends BaseService {
   }
 
   async delete (id: number) {
-    const personalSkill = await this.getRepo().personal.PersonalSkill.findOne(id);
+    const personalSkill = await this.getRepo().personal.PersonalSkill.findOne({ where: { id } });
 
     if (!personalSkill) {
       return false;
@@ -110,10 +109,10 @@ export default class PersonalSkillService extends BaseService {
   }
 
   async batchMount ({ baseId, newBaseId, isAll, ids = [] }: BatchSkillMountDto) {
-    const where: FindConditions<PersonalSkill> = {};
+    const where: any = {};
 
     if (baseId) {
-      const base = await this.getRepo().personal.PersonalBase.findOne({ id: baseId });
+      const base = await this.getRepo().personal.PersonalBase.findOne({ where: { id: baseId } });
       if (!base) {
         this.ctx.throw('原挂载点不存在', 422);
       }
@@ -133,7 +132,7 @@ export default class PersonalSkillService extends BaseService {
       return false;
     }
 
-    const newBase = await this.getRepo().personal.PersonalBase.findOne({ id: newBaseId });
+    const newBase = await this.getRepo().personal.PersonalBase.findOne({ where: { id: newBaseId } });
 
     if (!newBase) {
       this.ctx.throw('新挂载点不存在', 422);

@@ -1,8 +1,7 @@
 import * as _ from 'lodash';
 import { FindManyOptions } from 'typeorm';
 import { CreateBlogrollDto, UpdateBlogrollDto } from '../../dto/resource/blogroll';
-import Blogroll from '../../entities/mysql/resource/Blogroll';
-import BaseService, { IWhereCondition } from '../BaseService';
+import BaseService from '../BaseService';
 
 type IUpdateBlogrollInfo = Partial<UpdateBlogrollDto>;
 
@@ -39,7 +38,7 @@ export default class BlogrollService extends BaseService {
     return true;
   }
 
-  async findOne (where: IWhereCondition<Blogroll>) {
+  async findOne (where: any) {
     return this.getRepo().resource.Blogroll.findOne({
       where
     });
@@ -63,7 +62,7 @@ export default class BlogrollService extends BaseService {
   }
 
   async delete (id: number) {
-    const blogroll = await this.getRepo().resource.Blogroll.findOne(id);
+    const blogroll = await this.getRepo().resource.Blogroll.findOne({ where: { id } });
 
     if (!blogroll) {
       return false;

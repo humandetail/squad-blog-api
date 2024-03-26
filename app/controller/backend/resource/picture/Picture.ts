@@ -1,5 +1,5 @@
 import { unlink } from 'fs';
-import { FindCondition, Like } from 'typeorm';
+import { Like } from 'typeorm';
 import { BaseToggleShowDto } from '../../../../dto/common/common';
 import { CreatePictureDto, QueryPictureDto, UpdatePictureDto } from '../../../../dto/resource/picture/picture';
 import Picture from '../../../../entities/mysql/resource/Picture';
@@ -188,7 +188,7 @@ export default class PictureController extends BaseController {
 
     const { keyword, categoryId, ...otherOptions } = dto;
 
-    const where: FindCondition<Picture> = {};
+    const where: any = {};
 
     if (keyword) {
       where.name = Like(`%${keyword}%`);

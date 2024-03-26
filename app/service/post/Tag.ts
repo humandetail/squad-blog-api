@@ -1,8 +1,7 @@
 import { FindManyOptions } from 'typeorm';
 import { isNull, isUndefined } from 'lodash';
 import { PostTagDto } from '../../dto/post/tag';
-import Tag from '../../entities/mysql/post/Tag';
-import BaseService, { IWhereCondition } from '../BaseService';
+import BaseService from '../BaseService';
 import { FrontendPageGetDto } from '../../dto/common/common';
 
 export default class PostTagService extends BaseService {
@@ -15,7 +14,7 @@ export default class PostTagService extends BaseService {
 
   async update (id: number, tag: Partial<PostTagDto>) {
     const PostTag = this.getRepo().post.Tag;
-    const data = await PostTag.findOne(id);
+    const data = await PostTag.findOne({ where: { id } });
     if (!data) {
       return false;
     }
@@ -33,7 +32,7 @@ export default class PostTagService extends BaseService {
     return this.getRepo().post.Tag.findAndCount(options);
   }
 
-  async findOne (where: IWhereCondition<Tag>) {
+  async findOne (where: any) {
     return this.getRepo().post.Tag.findOne({ where });
   }
 

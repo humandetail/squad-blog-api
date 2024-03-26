@@ -1,10 +1,10 @@
-import { Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
+import { Column, Entity, ObjectId, ObjectIdColumn } from 'typeorm';
 import { BaseEntity } from '../BaseEntity';
 
 @Entity('post_view')
 export default class PostView extends BaseEntity {
   @ObjectIdColumn()
-  id: ObjectID;
+  id: ObjectId;
 
   @Column({
     name: 'post_id',
@@ -19,4 +19,10 @@ export default class PostView extends BaseEntity {
     comment: 'ip地址'
   })
   ip: string;
+
+  @Column({
+    name: 'created_at',
+    comment: 'typeorm 查不出自动填充的日期字段，只能自己加一个用于统计了。'
+  })
+  created_at: Date;
 }

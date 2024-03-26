@@ -19,6 +19,7 @@ import ExportResourceBlogroll from '../../../app/service/resource/Blogroll';
 import ExportResourcePicture from '../../../app/service/resource/Picture';
 import ExportResourcePictureCategory from '../../../app/service/resource/PictureCategory';
 import ExportResourcePostTemplate from '../../../app/service/resource/PostTemplate';
+import ExportStatisticsStatistics from '../../../app/service/statistics/Statistics';
 import ExportSysLog from '../../../app/service/sys/Log';
 import ExportSysMenu from '../../../app/service/sys/Menu';
 import ExportSysRole from '../../../app/service/sys/Role';
@@ -47,6 +48,9 @@ declare module 'egg' {
       picture: AutoInstanceType<typeof ExportResourcePicture>;
       pictureCategory: AutoInstanceType<typeof ExportResourcePictureCategory>;
       postTemplate: AutoInstanceType<typeof ExportResourcePostTemplate>;
+    }
+    statistics: {
+      statistics: AutoInstanceType<typeof ExportStatisticsStatistics>;
     }
     sys: {
       log: AutoInstanceType<typeof ExportSysLog>;

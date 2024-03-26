@@ -1,7 +1,6 @@
 import { FindManyOptions } from 'typeorm';
 import { PictureCategoryDto } from '../../dto/resource/picture/category';
-import PictureCategory from '../../entities/mysql/resource/PictureCategory';
-import BaseService, { IWhereCondition } from '../BaseService';
+import BaseService from '../BaseService';
 
 export default class PictureCategoryService extends BaseService {
   async create (category: PictureCategoryDto) {
@@ -13,7 +12,7 @@ export default class PictureCategoryService extends BaseService {
 
   async update (id: number, category: PictureCategoryDto | { isShow: number }) {
     const PictureCategory = this.getRepo().resource.PictureCategory;
-    const data = await PictureCategory.findOne(id);
+    const data = await PictureCategory.findOne({ where: { id } });
     if (!data) {
       return false;
     }
@@ -31,7 +30,7 @@ export default class PictureCategoryService extends BaseService {
     return this.getRepo().resource.PictureCategory.findAndCount(options);
   }
 
-  async findOne (where: IWhereCondition<PictureCategory>) {
+  async findOne (where: any) {
     return this.getRepo().resource.PictureCategory.findOne({ where });
   }
 

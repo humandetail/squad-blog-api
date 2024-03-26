@@ -1,14 +1,12 @@
-import { FindConditions, FindManyOptions, ObjectLiteral } from 'typeorm';
+import { FindManyOptions } from 'typeorm';
 import { UpdatePictureDto } from '../../dto/resource/picture/picture';
-import Picture from '../../entities/mysql/resource/Picture';
 import BaseService from '../BaseService';
+import Picture from '../../entities/mysql/resource/Picture';
 
 // interface IPicture extends CreatePictureDto {
 //   qiniuDomain: string;
 //   qiniuKey: string;
 // }
-
-type IWhereOPtion = string | ObjectLiteral | FindConditions<Picture> | FindConditions<Picture>[];
 export default class PictureService extends BaseService {
   async create (pic: Picture) {
     const Picture = this.getRepo().resource.Picture;
@@ -22,14 +20,14 @@ export default class PictureService extends BaseService {
   }
 
   async update (id: number, data: UpdatePictureDto & { qiniuKey: string; }) {
-    const picture = await this.getRepo().resource.Picture.findOne(id, { relations: ['category'] });
+    const picture = await this.getRepo().resource.Picture.findOne({ where: { id }, relations: ['category'] });
 
     if (!picture) {
       return false;
     }
 
     if (data.categoryId) {
-      const category = await this.getRepo().resource.PictureCategory.findOne(data.categoryId);
+      const category = await this.getRepo().resource.PictureCategory.findOne({ where: { id: data.categoryId } });
 
       if (!category) {
         return false;
@@ -50,7 +48,7 @@ export default class PictureService extends BaseService {
   }
 
   async editIsShow (id: number, isShow: number) {
-    const picture = await this.getRepo().resource.Picture.findOne(id);
+    const picture = await this.getRepo().resource.Picture.findOne({ where: { id } });
     if (!picture) {
       return false;
     }
@@ -61,7 +59,7 @@ export default class PictureService extends BaseService {
     return result;
   }
 
-  async findOne (where: IWhereOPtion, relations?: string[]) {
+  async findOne (where: any, relations?: string[]) {
     return this.getRepo().resource.Picture.findOne({ where, relations });
   }
 

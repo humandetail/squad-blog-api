@@ -2,7 +2,7 @@ import { isEmpty, isNull, isUndefined } from 'lodash';
 import { FindManyOptions } from 'typeorm';
 import { CreateMenuDto, UpdateMenuDto } from '../../dto/sys/menu';
 import Menu from '../../entities/mysql/sys/Menu';
-import BaseService, { IWhereCondition } from '../BaseService';
+import BaseService from '../BaseService';
 
 export default class MenuService extends BaseService {
   async create (data: Required<CreateMenuDto>) {
@@ -51,7 +51,7 @@ export default class MenuService extends BaseService {
     return this.getRepo().sys.Menu.findAndCount(options);
   }
 
-  async findOne (where: IWhereCondition<Menu>) {
+  async findOne (where: any) {
     return this.getRepo().sys.Menu.findOne({ where });
   }
 
@@ -89,7 +89,7 @@ export default class MenuService extends BaseService {
   }
 
   async getMenus (roleId: number) {
-    const role = await this.getRepo().sys.Role.findOne({ id: roleId });
+    const role = await this.getRepo().sys.Role.findOne({ where: { id: roleId } });
     if (!role) {
       return [];
     }
@@ -109,7 +109,7 @@ export default class MenuService extends BaseService {
   }
 
   async getPermissions (roleId: number) {
-    const role = await this.getRepo().sys.Role.findOne({ id: roleId });
+    const role = await this.getRepo().sys.Role.findOne({ where: { id: roleId } });
     if (!role) {
       return [];
     }

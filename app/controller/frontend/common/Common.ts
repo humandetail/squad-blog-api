@@ -1,3 +1,4 @@
+import { ReportDto } from '../../../dto/common/statistic';
 import PersonalSkill from '../../../entities/mysql/personal/PersonalSkill';
 import PersonalWork from '../../../entities/mysql/personal/PersonalWork';
 import { Route } from '../../../libs/decorators/RouterRegister';
@@ -122,7 +123,7 @@ export default class CommonController extends BaseController {
    * @apiSuccess {Object} data
    */
   @Route('get', '/frontend-service/aboutUs')
-  async getPeronalInfo () {
+  async getPersonalInfo () {
     const { service } = this;
     const personalBase = await service.personal.base.findOne({
       isDefault: 1,
@@ -178,6 +179,28 @@ export default class CommonController extends BaseController {
           };
         })
       },
+    });
+  }
+
+  /**
+   * @api {get} /frontend-service/report 页面浏览上报
+   * @apiGroup Frontend - Common
+   * @apiUse InfoRes
+   * @apiSuccess {Boolean} true
+   */
+  @Route('get', '/frontend-service/report')
+  async report () {
+    const { ctx, service } = this;
+    const dto = await ctx.validate<ReportDto>(ReportDto, this.getQuery());
+
+    await service.statistics.statistics.addStatistic({
+      page: dto.page,
+      source: dto.source ?? '',
+      ua: dto.ua ?? ''
+    });
+
+    this.res({
+      data: true
     });
   }
 }

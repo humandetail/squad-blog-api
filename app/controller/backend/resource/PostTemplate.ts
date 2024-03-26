@@ -1,8 +1,7 @@
 import { unlink } from 'fs';
-import { FindCondition, Like } from 'typeorm';
+import { Like } from 'typeorm';
 import { BaseToggleShowDto } from '../../../dto/common/common';
 import { CreatePostTemplateDto, QueryPostTemplatesDto, UpdatePostTemplateDto } from '../../../dto/resource/postTemplate';
-import PostTemplate from '../../../entities/mysql/resource/PostTemplate';
 import { AdminRoute } from '../../../libs/decorators/RouterRegister';
 import { formatPostTemplate } from '../../../libs/utils';
 import { IPostTemplate } from '../../../service/resource/PostTemplate';
@@ -140,7 +139,7 @@ export default class PostTemplateController extends BaseController {
 
     const { keyword, ...otherOptions } = dto;
 
-    const where: FindCondition<PostTemplate> = {};
+    const where: any = {};
 
     if (keyword) {
       where.name = Like(`%${keyword}%`);

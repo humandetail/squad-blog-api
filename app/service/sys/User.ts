@@ -1,6 +1,5 @@
 import { CreateUserDto } from '../../dto/sys/user';
-import BaseService, { IWhereCondition } from '../BaseService';
-import User from '../../entities/mysql/sys/User';
+import BaseService from '../BaseService';
 import { FindManyOptions } from 'typeorm';
 
 export interface IUserInfo extends CreateUserDto {
@@ -26,7 +25,7 @@ export default class UserService extends BaseService {
     // 校验唯一性
     const { username } = userInfo;
 
-    const exists = await this.getRepo().sys.User.findOne({ username });
+    const exists = await this.getRepo().sys.User.findOne({ where: { username } });
 
     if (exists) {
       // 用户已存在
@@ -38,7 +37,7 @@ export default class UserService extends BaseService {
       const user = manager.create(this.getEntity().sys.User, userInfo);
 
       if (userInfo.roleId) {
-        const role = await this.getRepo().sys.Role.findOne({ id: userInfo.roleId });
+        const role = await this.getRepo().sys.Role.findOne({ where: { id: userInfo.roleId } });
         if (!role) {
           this.ctx.throw('角色不存在', 422);
         }
@@ -74,7 +73,7 @@ export default class UserService extends BaseService {
     userInfo: IUpdateUserInfo | IUpdatePasswordInfo,
     isUpdatePassword = false
   ): Promise<boolean> {
-    const user = await this.getRepo().sys.User.findOne(id);
+    const user = await this.getRepo().sys.User.findOne({ where: { id } });
 
     if (!user) {
       return false;
@@ -99,7 +98,7 @@ export default class UserService extends BaseService {
     const { isLock, isShow, sort, lastLogin, roleId } = userInfo as IUserInfo;
 
     if (roleId) {
-      const role = await this.getRepo().sys.Role.findOne({ id: roleId });
+      const role = await this.getRepo().sys.Role.findOne({ where: { id: roleId } });
       if (!role) {
         this.ctx.throw('角色不存在', 422);
       }
@@ -117,7 +116,7 @@ export default class UserService extends BaseService {
     return true;
   }
 
-  async findOne (where: IWhereCondition<User>, relations: string[] = []) {
+  async findOne (where: any, relations: string[] = []) {
     const user = await this.getRepo().sys.User.findOne({ where, relations });
 
     return user;
@@ -133,7 +132,8 @@ export default class UserService extends BaseService {
 
   // 删除用户
   async delete (id: string) {
-    const user = await this.getRepo().sys.User.findOne(id, {
+    const user = await this.getRepo().sys.User.findOne({
+      where: { id },
       relations: ['personalBases']
     });
     if (!user) {

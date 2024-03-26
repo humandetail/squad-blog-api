@@ -3,6 +3,7 @@ import { FrontendPageGetDto } from '../../../dto/common/common';
 import { Route } from '../../../libs/decorators/RouterRegister';
 import { formatFrontendPost, formatFrontendPostDetail } from '../../../libs/utils';
 import BaseController from '../../BaseController';
+import Keyword from '../../../entities/mongodb/article/Keywords';
 
 /**
  * 鉴权相关控制器
@@ -138,6 +139,14 @@ export default class CommonController extends BaseController {
 
     if (!keyword) {
       return this.res(undefined, 422);
+    }
+
+    // 上报关键字查询
+    if (otherOptions.current === 1) {
+      const k = new Keyword();
+      k.ip = this.getHelper().getIp();
+      k.keyword = keyword;
+      service.statistics.statistics.addKeyword(k);
     }
 
     const options = this.formatFindManyOptions(

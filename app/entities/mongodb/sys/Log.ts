@@ -1,10 +1,10 @@
-import { Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
+import { Column, Entity, ObjectId, ObjectIdColumn } from 'typeorm';
 import { BaseEntity } from '../BaseEntity';
 
 @Entity()
 export default class Log extends BaseEntity {
   @ObjectIdColumn()
-  id: ObjectID;
+  id: ObjectId;
 
   @Column({
     name: 'username',
@@ -38,4 +38,10 @@ export default class Log extends BaseEntity {
     comment: '结果'
   })
   result: string;
+
+  @Column({
+    name: 'created_at',
+    comment: 'typeorm 查不出自动填充的日期字段，只能自己加一个用于统计了。'
+  })
+  created_at: Date;
 }

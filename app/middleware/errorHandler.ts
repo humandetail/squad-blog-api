@@ -6,7 +6,7 @@ export default function errorHandler (): any {
   return async (ctx: Context, next: () => Promise<any>) => {
     try {
       await next();
-    } catch (err) {
+    } catch (err: any) {
       ctx.logger.error('[Exception]', err.message, err.errors);
 
       const status = err.status || 500;

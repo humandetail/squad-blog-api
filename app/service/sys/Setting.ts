@@ -1,6 +1,7 @@
 import { isNull, isUndefined } from 'lodash';
 import { UpdateSettingDto } from '../../dto/sys/setting';
 import BaseService from '../BaseService';
+import { Not } from 'typeorm';
 
 export default class SettingService extends BaseService {
   async create () {
@@ -19,8 +20,9 @@ export default class SettingService extends BaseService {
 
   async findOne (withLogo = false) {
     return this.getRepo().sys.Setting.findOne(withLogo ? {
-      relations: ['logo']
-    } : {});
+      relations: ['logo'],
+      where: { id: Not(0) }
+    } : { where: { id: Not(0) } });
   }
 
   async update ({ logoId, ...data }: UpdateSettingDto) {
@@ -31,7 +33,7 @@ export default class SettingService extends BaseService {
     }
 
     if (logoId) {
-      const logo = await this.getRepo().resource.Picture.findOne(logoId);
+      const logo = await this.getRepo().resource.Picture.findOne({ where: { id: logoId } });
 
       if (!logo) {
         this.ctx.throw('不存在的图片资源', 422);
