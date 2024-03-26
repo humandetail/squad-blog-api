@@ -4,6 +4,9 @@ import { Route } from '../../../libs/decorators/RouterRegister';
 import { formatFrontendPost, formatFrontendPostDetail } from '../../../libs/utils';
 import BaseController from '../../BaseController';
 import Keyword from '../../../entities/mongodb/article/Keywords';
+import {
+  isURL
+} from 'class-validator';
 
 /**
  * 鉴权相关控制器
@@ -147,6 +150,10 @@ export default class CommonController extends BaseController {
       k.ip = this.getHelper().getIp();
       k.keyword = keyword;
       service.statistics.statistics.addKeyword(k);
+    }
+
+    if (isURL(keyword)) {
+      return this.res(undefined, 422);
     }
 
     const options = this.formatFindManyOptions(
