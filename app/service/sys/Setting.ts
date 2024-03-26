@@ -19,10 +19,12 @@ export default class SettingService extends BaseService {
   }
 
   async findOne (withLogo = false) {
-    return this.getRepo().sys.Setting.findOne(withLogo ? {
+    const data = await this.getRepo().sys.Setting.find(withLogo ? {
       relations: ['logo'],
       where: { id: Not(0) }
     } : { where: { id: Not(0) } });
+
+    return data[0];
   }
 
   async update ({ logoId, ...data }: UpdateSettingDto) {
