@@ -199,10 +199,13 @@ export default class StatisticService extends BaseService {
         },
         {
           $group: {
-            _id: '$ip',
-            keyword: {
-              $push: '$keyword'
+            _id: {
+              ip: '$ip',
+              keyword: '$keyword'
             },
+            // keyword: {
+            //   $push: '$keyword'
+            // },
             count: { $sum: 1 }
           }
         },
@@ -217,11 +220,10 @@ export default class StatisticService extends BaseService {
       ])
       .toArray();
 
-    return (data as any[]).map(({ _id, count, keyword }) => {
+    return (data as any[]).map(({ _id, count }) => {
       return {
-        ip: _id,
+        ..._id,
         count,
-        keyword: keyword[0]
       };
     });
   }
