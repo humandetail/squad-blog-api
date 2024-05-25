@@ -127,7 +127,10 @@ export default class PostService extends BaseService {
     if (withViewCount) {
       const data: Array<Post & { viewCount: number }> = [];
       for (const post of posts) {
-        const viewCount = await this.getMongoDBManger().count(PostView, { where: { postId: post.id } });
+        // const viewCount = await this.getMongoDBManger().count(PostView, { where: { postId: post.id } });
+        const viewCount = await this.getMongoDBManger()
+          .getMongoRepository(PostView)
+          .count({ postId: { $eq: post.id } });
         data.push({
           ...post,
           viewCount
@@ -153,7 +156,10 @@ export default class PostService extends BaseService {
     if (!post || !withViewCount) {
       return post as any;
     }
-    const viewCount = await this.getMongoDBManger().count(PostView, { where: { postId: post.id } });
+    // const viewCount = await this.getMongoDBManger().count(PostView, { where: { postId: post.id } });
+    const viewCount = await this.getMongoDBManger()
+      .getMongoRepository(PostView)
+      .count({ postId: { $eq: post.id } });
     return {
       ...post,
       viewCount
