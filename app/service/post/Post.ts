@@ -119,10 +119,31 @@ export default class PostService extends BaseService {
   }
 
   async find (options: FindManyOptions, relations: string[] = [], withViewCount = false): Promise<[Array<IPostWithViewCount>, number]> {
-    const [posts, total] = await this.getRepo().post.Post.findAndCount({
-      ...options,
-      relations
-    } as any);
+    const builder = this.getRepo().post.Post.createQueryBuilder('post');
+    if (options.where) {
+      builder.where(options.where as any);
+    }
+    if (options.order) {
+      builder.orderBy(Object.entries((options.order ?? {})as Record<string, any>).reduce((acc, item) => {
+        return {
+          ...acc,
+          [`post.${item[0]}`]: item[1]
+        };
+      }, {}));
+    }
+
+    relations.forEach(name => {
+      builder.leftJoinAndSelect(`post.${name}`, name);
+    });
+    const [posts, total] = await builder
+      .skip(options.skip ?? 0)
+      .take(options.take ?? 10)
+      .getManyAndCount();
+
+    // const [posts, total] = await this.getRepo().post.Post.findAndCount({
+    //   ...options,
+    //   relations
+    // } as any);
 
     if (withViewCount) {
       const data: Array<Post & { viewCount: number }> = [];
